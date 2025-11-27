@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/CMakeFiles/bootloader
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/CMakeFiles/bootloader.rule
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/CMakeFiles/bootloader-complete.rule
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule

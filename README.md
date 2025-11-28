@@ -1,3 +1,6 @@
+idf.py build
+idf.py -p /dev/ttyUSB0 flash
+
 # The Ultimate ESP32 Hacking Tool: Because sometimes you just need to be a little evil!
 ### Looking to take down your neighbor's wifi network? Or just want to cause chaos at your local coffee shop? Or does your Boss pay you less than you deserve?
 Look no further, because we have the perfect tool for you: the ESP32 hacking tool!

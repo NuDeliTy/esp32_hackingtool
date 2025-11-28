@@ -1,0 +1,488 @@
+/* hackingtool.c
+   Minimal menu + action wiring for EC11 + SH1106 OLED
+   Uses functions from htool_api / htool_netman / htool_ble etc.
+*/
+
+#include "sdkconfig.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include "esp_event.h"
+#include "esp_partition.h"
+#include "esp_log.h"
+#include "htool_api.h"
+#include "htool_netman.h"
+#include "htool_ble.h"
+#include "driver/i2c.h"
+#include "driver/gpio.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "font6x8.h"
+
+// -------------------------------------------------------------
+// PIN CONFIG
+// -------------------------------------------------------------
+#define PIN_SDA     21
+#define PIN_SCL     22
+#define PIN_ROT_A   32
+#define PIN_ROT_B   33
+#define PIN_ROT_P   25
+#define PIN_BTN_BAK 34
+#define PIN_BTN_CON 35
+
+// -------------------------------------------------------------
+// SH1106 DEFINES
+// -------------------------------------------------------------
+#define SH1106_ADDR 0x3C
+#define SH1106_WIDTH 128
+#define SH1106_HEIGHT 64
+static uint8_t sh1106_buffer[SH1106_WIDTH * SH1106_HEIGHT / 8];
+
+// tag
+static const char *TAG = "htool_ui";
+
+// Forward
+static void ui_task(void *arg);
+
+// -------------------------------------------------------------
+// External API data (from htool_api.h)
+extern wifi_ap_record_t *global_scans;
+extern uint8_t global_scans_count;
+
+// -------------------------------------------------------------
+// I2C INIT
+// -------------------------------------------------------------
+static void i2c_init(void)
+{
+    i2c_config_t cfg = {
+        .mode = I2C_MODE_MASTER,
+        .sda_io_num = PIN_SDA,
+        .sda_pullup_en = GPIO_PULLUP_ENABLE,
+        .scl_io_num = PIN_SCL,
+        .scl_pullup_en = GPIO_PULLUP_ENABLE,
+        .master = {
+            .clk_speed = 400000
+        }
+    };
+    ESP_ERROR_CHECK(i2c_param_config(I2C_NUM_0, &cfg));
+    ESP_ERROR_CHECK(i2c_driver_install(I2C_NUM_0, cfg.mode, 0, 0, 0));
+}
+
+// -------------------------------------------------------------
+// SH1106 LOW-LEVEL
+// -------------------------------------------------------------
+static void sh1106_cmd(uint8_t cmd)
+{
+    i2c_cmd_handle_t h = i2c_cmd_link_create();
+    i2c_master_start(h);
+    i2c_master_write_byte(h, (SH1106_ADDR << 1) | I2C_MASTER_WRITE, true);
+    i2c_master_write_byte(h, 0x00, true); // control byte: command
+    i2c_master_write_byte(h, cmd, true);
+    i2c_master_stop(h);
+    i2c_master_cmd_begin(I2C_NUM_0, h, pdMS_TO_TICKS(100));
+    i2c_cmd_link_delete(h);
+}
+
+static void sh1106_data(const uint8_t *data, size_t len)
+{
+    i2c_cmd_handle_t h = i2c_cmd_link_create();
+    i2c_master_start(h);
+    i2c_master_write_byte(h, (SH1106_ADDR << 1) | I2C_MASTER_WRITE, true);
+    i2c_master_write_byte(h, 0x40, true); // control byte: data
+    i2c_master_write(h, (uint8_t *)data, len, true);
+    i2c_master_stop(h);
+    i2c_master_cmd_begin(I2C_NUM_0, h, pdMS_TO_TICKS(100));
+    i2c_cmd_link_delete(h);
+}
+
+// -------------------------------------------------------------
+// SH1106 INIT SEQUENCE
+// -------------------------------------------------------------
+static void sh1106_init(void)
+{
+    sh1106_cmd(0xAE); // display OFF
+    sh1106_cmd(0xD5); sh1106_cmd(0x80);
+    sh1106_cmd(0xA8); sh1106_cmd(0x3F);
+    sh1106_cmd(0xD3); sh1106_cmd(0x00);
+    sh1106_cmd(0x40);
+    sh1106_cmd(0xAD); sh1106_cmd(0x8B);
+    sh1106_cmd(0xA1);
+    sh1106_cmd(0xC8);
+    sh1106_cmd(0xDA); sh1106_cmd(0x12);
+    sh1106_cmd(0x81); sh1106_cmd(0x7F);
+    sh1106_cmd(0xD9); sh1106_cmd(0x22);
+    sh1106_cmd(0xDB); sh1106_cmd(0x35);
+    sh1106_cmd(0xA4);
+    sh1106_cmd(0xA6);
+    sh1106_cmd(0xAF);
+}
+
+// -------------------------------------------------------------
+// SIMPLE 6x8 FONT helpers (font6x8.h must define font6x8)
+static void draw_pixel(int x, int y, int color)
+{
+    if (x < 0 || x >= SH1106_WIDTH || y < 0 || y >= SH1106_HEIGHT) return;
+    size_t idx = x + (y / 8) * SH1106_WIDTH;
+    if (color)
+        sh1106_buffer[idx] |= (1 << (y & 7));
+    else
+        sh1106_buffer[idx] &= ~(1 << (y & 7));
+}
+
+static void draw_char(int x, int y, char ch)
+{
+    const uint8_t *glyph = font6x8[(unsigned char)ch];
+    for (int i = 0; i < 6; ++i) {
+        uint8_t col = glyph[i];
+        for (int j = 0; j < 8; ++j) {
+            draw_pixel(x + i, y + j, (col >> j) & 1);
+        }
+    }
+}
+
+static void draw_str(int x, int y, const char *s)
+{
+    while (*s) {
+        draw_char(x, y, *s++);
+        x += 6;
+    }
+}
+
+static void clear(void)
+{
+    memset(sh1106_buffer, 0, sizeof(sh1106_buffer));
+}
+
+static void sh1106_update(void)
+{
+    for (uint8_t page = 0; page < 8; page++) {
+        sh1106_cmd(0xB0 + page);
+        sh1106_cmd(0x00);
+        sh1106_cmd(0x10);
+        sh1106_data(&sh1106_buffer[page * SH1106_WIDTH], SH1106_WIDTH);
+    }
+}
+
+// -------------------------------------------------------------
+// ROTARY ENCODER / BUTTON HANDLERS
+// -------------------------------------------------------------
+static int last_a = 0;
+static int read_rotary(void)
+{
+    int a = gpio_get_level(PIN_ROT_A);
+    int b = gpio_get_level(PIN_ROT_B);
+
+    if (a != last_a) {
+        last_a = a;
+        if (a == b) return +1;  // clockwise
+        else        return -1;  // counter
+    }
+    return 0;
+}
+
+static int read_button(int pin)
+{
+    return (gpio_get_level(pin) == 0); // active low -> return 1 when pressed
+}
+
+// -------------------------------------------------------------
+// MENU SYSTEM + items
+// -------------------------------------------------------------
+typedef enum {
+    MAIN_MENU = 0,
+    SCAN_RESULTS_MENU,
+    BLE_MENU,
+    BEACON_MENU,
+} ui_mode_t;
+
+static const char *main_items[] = {
+    "Scan Networks",
+    "Deauth (toggle)",
+    "Beacon Spammer",
+    "Captive Portal",
+    "Evil Twin",
+    "BLE Spoof"
+};
+static const int MAIN_ITEMS = sizeof(main_items) / sizeof(main_items[0]);
+
+static int menu_index = 0;
+static ui_mode_t ui_mode = MAIN_MENU;
+
+// helper: draw main menu
+static void update_main_menu(void)
+{
+    clear();
+    draw_str(0, 0, "HackingTool (enc)");
+    for (int i = 0; i < MAIN_ITEMS; i++) {
+        int y = 12 + i * 8;
+        if (i == menu_index) draw_str(0, y, "> ");
+        draw_str(12, y, main_items[i]);
+    }
+    sh1106_update();
+}
+
+// helper: draw a short status message
+static void show_status(const char *line1, const char *line2)
+{
+    clear();
+    draw_str(0, 0, line1);
+    if (line2) draw_str(0, 12, line2);
+    sh1106_update();
+}
+
+// show scan results (up to fits on screen)
+static void show_scan_results(int sel_index)
+{
+    clear();
+    draw_str(0, 0, "Scan results:");
+    if (global_scans_count == 0 || global_scans == NULL) {
+        draw_str(0, 12, "No results");
+        sh1106_update();
+        return;
+    }
+    // show up to 6 lines (fits 6*8=48px)
+    int start = 0;
+    if (sel_index > 3 && global_scans_count > 6) start = sel_index - 3;
+    for (int i = 0; i < 6 && (start + i) < global_scans_count; i++) {
+        int y = 12 + i * 8;
+        int idx = start + i;
+        char buf[24] = {0};
+        // copy SSID (max 20 chars)
+        int len = strlen((char*)global_scans[idx].ssid);
+        if (len > 20) len = 20;
+        memcpy(buf, global_scans[idx].ssid, len);
+        buf[len] = 0;
+        if (idx == sel_index) draw_str(0, y, "> ");
+        draw_str(12, y, buf);
+    }
+    sh1106_update();
+}
+
+// -------------------------------------------------------------
+// UI task: handles display + input polling and menu actions
+// -------------------------------------------------------------
+static bool deauther_running = false;
+static bool beacon_running = false;
+static bool captive_running = false;
+static bool ble_adv_running_flag = false;
+
+static void ui_task(void *arg)
+{
+    ESP_LOGI(TAG, "UI task started");
+    update_main_menu();
+
+    int scan_sel = 0;
+
+    while (1) {
+        int rot = read_rotary();
+        if (rot != 0) {
+            if (ui_mode == MAIN_MENU) {
+                menu_index += rot;
+                if (menu_index < 0) menu_index = 0;
+                if (menu_index >= MAIN_ITEMS) menu_index = MAIN_ITEMS - 1;
+                update_main_menu();
+            } else if (ui_mode == SCAN_RESULTS_MENU) {
+                scan_sel += rot;
+                if (scan_sel < 0) scan_sel = 0;
+                if (scan_sel >= global_scans_count) scan_sel = global_scans_count - 1;
+                show_scan_results(scan_sel);
+            } else if (ui_mode == BLE_MENU) {
+                // rotate to change BLE preset (0..n) - but we show index only
+                menu_index += rot;
+                if (menu_index < 0) menu_index = 0;
+                if (menu_index > 39) menu_index = 39;
+                clear();
+                char t[32];
+                snprintf(t, sizeof(t), "BLE preset: %d", menu_index);
+                draw_str(0, 0, t);
+                draw_str(0, 12, "Press to set");
+                sh1106_update();
+            }
+        }
+
+        // Confirm button pressed -> perform action
+        if (read_button(PIN_ROT_P)) {
+            vTaskDelay(pdMS_TO_TICKS(60)); // simple debounce
+            if (ui_mode == MAIN_MENU) {
+                switch (menu_index) {
+                    case 0: // Scan Networks
+                    {
+                        show_status("Starting active scan", NULL);
+                        htool_api_start_active_scan();
+                        // wait a short while for results (components normally fill global_scans)
+                        int wait = 0;
+                        while (wait < 50 && (global_scans_count == 0)) { // ~500ms
+                            vTaskDelay(pdMS_TO_TICKS(10));
+                            wait++;
+                        }
+                        scan_sel = 0;
+                        ui_mode = SCAN_RESULTS_MENU;
+                        show_scan_results(scan_sel);
+                        break;
+                    }
+                    case 1: // Deauth toggle
+                    {
+                        if (!deauther_running) {
+                            htool_api_start_deauther();
+                            deauther_running = true;
+                            show_status("Deauther started", "Back to stop");
+                        } else {
+                            htool_api_stop_deauther();
+                            deauther_running = false;
+                            show_status("Deauther stopped", NULL);
+                        }
+                        break;
+                    }
+                    case 2: // Beacon spammer
+                    {
+                        if (!beacon_running) {
+                            // start with beacon index 0 (you can later add submenu)
+                            htool_api_start_beacon_spammer(0);
+                            beacon_running = true;
+                            show_status("Beacon spam started", "Back to stop");
+                        } else {
+                            htool_api_stop_beacon_spammer();
+                            beacon_running = false;
+                            show_status("Beacon spam stopped", NULL);
+                        }
+                        break;
+                    }
+                    case 3: // Captive portal
+                    {
+                        if (!captive_running) {
+                            // cp_index 0 default
+                            htool_api_start_captive_portal(0);
+                            captive_running = true;
+                            show_status("Captive portal on", "Back to stop");
+                        } else {
+                            htool_api_stop_captive_portal();
+                            captive_running = false;
+                            show_status("Captive portal off", NULL);
+                        }
+                        break;
+                    }
+                    case 4: // Evil Twin
+                    {
+                        // simply start evil twin with ssid_index 0 and cp_index 0 for now
+                        htool_api_start_evil_twin(0, 0);
+                        show_status("Evil Twin started", "Press Back to stop");
+                        break;
+                    }
+                    case 5: // BLE Spoof - open BLE menu to pick preset
+                    {
+                        ui_mode = BLE_MENU;
+                        menu_index = 0;
+                        clear();
+                        draw_str(0, 0, "BLE Spoof - pick idx");
+                        draw_str(0, 12, "Rotate select");
+                        draw_str(0, 24, "Press to start/stop");
+                        sh1106_update();
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            } else if (ui_mode == SCAN_RESULTS_MENU) {
+                // On confirm: try sending deauth to selected AP (simple demo)
+                if (global_scans_count > 0) {
+                    char buf[32] = {0};
+                    int idx = scan_sel;
+                    int len = strlen((char*)global_scans[idx].ssid);
+                    if (len > 30) len = 30;
+                    memcpy(buf, global_scans[idx].ssid, len);
+                    buf[len] = 0;
+                    // ask and send single deauth frame (is_station = false)
+                    show_status("Sending deauth to:", buf);
+                    htool_api_send_deauth_frame((uint8_t)idx, false);
+                }
+            } else if (ui_mode == BLE_MENU) {
+                // set BLE preset and toggle adv
+                uint8_t preset = (uint8_t)menu_index;
+                htool_api_set_ble_adv(preset);
+                if (!htool_api_ble_adv_running()) {
+                    htool_api_ble_start_adv();
+                    ble_adv_running_flag = true;
+                    show_status("BLE adv started", NULL);
+                } else {
+                    htool_api_ble_stop_adv();
+                    ble_adv_running_flag = false;
+                    show_status("BLE adv stopped", NULL);
+                }
+            }
+            // small visual delay
+            vTaskDelay(pdMS_TO_TICKS(220));
+        }
+
+        // Back button handling
+        if (read_button(PIN_BTN_BAK)) {
+            vTaskDelay(pdMS_TO_TICKS(60)); // debounce
+            if (ui_mode == MAIN_MENU) {
+                // do nothing or show a small message
+                show_status("Main menu", NULL);
+            } else if (ui_mode == SCAN_RESULTS_MENU) {
+                ui_mode = MAIN_MENU;
+                menu_index = 0;
+                update_main_menu();
+            } else if (ui_mode == BLE_MENU) {
+                // ensure adv stopped when leaving BLE menu (optional)
+                if (ble_adv_running_flag) {
+                    htool_api_ble_stop_adv();
+                    ble_adv_running_flag = false;
+                }
+                ui_mode = MAIN_MENU;
+                menu_index = 0;
+                update_main_menu();
+            }
+            vTaskDelay(pdMS_TO_TICKS(220));
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+
+// -------------------------------------------------------------
+// Initialize ESP modules used by htool
+static void initialize_esp_modules(void)
+{
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+    ESP_ERROR_CHECK(esp_netif_init());
+}
+
+// -------------------------------------------------------------
+// APP MAIN
+// -------------------------------------------------------------
+void app_main(void)
+{
+    ESP_LOGI(TAG, "Start HackingTool (oled menu)");
+
+    initialize_esp_modules();
+
+    // start UI: init I2C, sh1106 and gpio, then create ui task
+    i2c_init();
+    sh1106_init();
+
+    // configure GPIO inputs with internal pullups (buttons/encoder)
+    gpio_config_t io_conf = {
+        .intr_type = GPIO_INTR_DISABLE,
+        .mode = GPIO_MODE_INPUT,
+        .pin_bit_mask = (1ULL << PIN_ROT_A) | (1ULL << PIN_ROT_B) |
+                        (1ULL << PIN_ROT_P) | (1ULL << PIN_BTN_BAK) |
+                        (1ULL << PIN_BTN_CON),
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .pull_up_en = GPIO_PULLUP_ENABLE
+    };
+    ESP_ERROR_CHECK(gpio_config(&io_conf));
+
+    // create UI task
+    BaseType_t r = xTaskCreate(ui_task, "ui_task", 6 * 1024, NULL, tskIDLE_PRIORITY + 2, NULL);
+    if (r != pdPASS) {
+        ESP_LOGE(TAG, "Failed to create ui_task");
+    }
+
+    // keep compatibility with original startup sequence
+    htool_netman_do_nothing(); // fix linker error
+    htool_api_init();
+    htool_api_start();
+
+    ESP_LOGI(TAG, "HackingTool Startup completed");
+}

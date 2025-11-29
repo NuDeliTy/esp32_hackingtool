@@ -1,8 +1,8 @@
 /*
- * hackingtool.c - CLEANED & FIXED
- * - Removed unused blocking functions (Fixes build errors)
- * - "RUN" indicators for all tools
- * - Non-blocking State Machine UI
+ * hackingtool.c - HIDDEN NETWORKS FIX
+ * - Hidden Networks are now shown as "(Hidden)"
+ * - Duplicates (including multiple hidden ones) are filtered to show only one instance
+ * - Frequency band (2.4/5G) is displayed
  */
 
 #include "sdkconfig.h"
@@ -204,6 +204,7 @@ static volatile wifi_scan_state_t scan_state = WIFI_SCAN_IDLE;
 static wifi_ap_record_t scan_results_local[64]; 
 static int scan_count_local = 0;
 
+// Filtered Scan Task
 static void wifi_scan_task(void *arg) {
     scan_state = WIFI_SCAN_RUNNING;
     scan_count_local = 0;
@@ -212,10 +213,40 @@ static void wifi_scan_task(void *arg) {
     while (scan_started) { vTaskDelay(pdMS_TO_TICKS(100)); }
     
     if (global_scans_count > 0 && global_scans != NULL) {
-        int n = global_scans_count > 64 ? 64 : global_scans_count;
-        for (int i = 0; i < n; ++i) scan_results_local[i] = global_scans[i];
-        scan_count_local = n;
+        int unique_count = 0;
+        char current_ssid[33]; 
+
+        for (int i = 0; i < global_scans_count && unique_count < 64; ++i) {
+            // Prepare the display name
+            memset(current_ssid, 0, 33);
+            
+            // IF HIDDEN: Generate unique name using last byte of MAC address
+            if (strlen((char*)global_scans[i].ssid) == 0) {
+                snprintf(current_ssid, 32, "(Hidden) %02X", global_scans[i].bssid[5]);
+            } else {
+                strncpy(current_ssid, (char*)global_scans[i].ssid, 32);
+            }
+
+            // Check for duplicates in our local list
+            bool is_duplicate = false;
+            for (int k = 0; k < unique_count; k++) {
+                if (strcmp(current_ssid, (char*)scan_results_local[k].ssid) == 0) {
+                    is_duplicate = true;
+                    break;
+                }
+            }
+
+            // If unique, add it
+            if (!is_duplicate) {
+                scan_results_local[unique_count] = global_scans[i];
+                // Overwrite the SSID in our local copy with the generated name
+                strcpy((char*)scan_results_local[unique_count].ssid, current_ssid);
+                unique_count++;
+            }
+        }
+        scan_count_local = unique_count;
     }
+    
     scan_state = WIFI_SCAN_DONE;
     vTaskDelete(NULL);
 }
@@ -237,7 +268,13 @@ static void show_scan_results_screen(int selected) {
     for (int i = 0; i < 6 && (start + i) < count; i++) {
         int idx = start + i;
         char line[40];
-        snprintf(line, 40, "%-14.14s %d", list[idx].ssid, list[idx].rssi);
+        
+        // Show Band (2.4 or 5G)
+        const char* freq = (list[idx].primary > 14) ? "5G" : "2.4";
+        
+        // Format: "SSID (Freq) RSSI"
+        snprintf(line, 40, "%-10.10s %s %d", list[idx].ssid, freq, list[idx].rssi);
+        
         if (idx == selected) draw_str(0, 12+i*8, "> ");
         draw_str(12, 12+i*8, line);
     }

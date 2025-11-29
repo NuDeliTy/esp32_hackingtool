@@ -132,6 +132,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_uart/cmake_install.cmake")
   include("/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_ble/cmake_install.cmake")
   include("/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_api/cmake_install.cmake")
+  include("/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_fonts/cmake_install.cmake")
   include("/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/main/cmake_install.cmake")
 
 endif()

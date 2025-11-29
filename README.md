@@ -1,3 +1,10 @@
+run in project folder:
+pyenv local 3.10.14
+unset IDF_PATH
+unset IDF_TOOLS_PATH
+unset IDF_PYTHON_ENV_PATH
+. ~/esp/esp-idf-4.3.2/export.sh
+
 idf.py build
 idf.py -p /dev/ttyUSB0 flash
 

@@ -739,6 +739,12 @@
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_api/CMakeFiles/install.dir
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_api/CMakeFiles/install/local.dir
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_api/CMakeFiles/install/strip.dir
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_fonts/CMakeFiles/edit_cache.dir
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_fonts/CMakeFiles/rebuild_cache.dir
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_fonts/CMakeFiles/list_install_components.dir
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_fonts/CMakeFiles/install.dir
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_fonts/CMakeFiles/install/local.dir
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_fonts/CMakeFiles/install/strip.dir
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/main/CMakeFiles/__idf_main.dir
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/main/CMakeFiles/edit_cache.dir
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/main/CMakeFiles/rebuild_cache.dir

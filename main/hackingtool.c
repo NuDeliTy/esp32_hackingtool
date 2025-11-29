@@ -1,8 +1,8 @@
 /*
- * hackingtool.c - HIDDEN NETWORKS FIX
- * - Hidden Networks are now shown as "(Hidden)"
- * - Duplicates (including multiple hidden ones) are filtered to show only one instance
- * - Frequency band (2.4/5G) is displayed
+ * hackingtool.c - COMPILER FIX & MESH LOGIC
+ * - Fixed "Unused function" errors by properly calling menus in State Machine
+ * - Fixed "Truncation" errors by increasing buffer sizes
+ * - Full Mesh Clustering Support
  */
 
 #include "sdkconfig.h"
@@ -29,6 +29,9 @@
 #include "ble_monitor.h"
 
 #define TAG "htool_ui"
+
+// --- CONFIGURATION ---
+#define HIDE_DUPLICATES 1 
 
 // --- PINS ---
 #define PIN_SDA     21
@@ -94,7 +97,17 @@ static const int MAIN_ITEMS = 6;
 
 static int menu_index = 0;
 static ui_mode_t ui_mode = MAIN_MENU;
-static int target_ap_index = -1; // Target for attacks
+static int target_ap_index = -1; 
+
+// --- DATA STRUCT FOR UI LIST ---
+typedef struct {
+    wifi_ap_record_t record;
+    int mesh_count; 
+} ui_scan_result_t;
+
+static ui_scan_result_t scan_results_local[64]; 
+static int scan_count_local = 0;
+
 
 // --- DISPLAY DRIVER ---
 static void sh1106_cmd(uint8_t cmd) {
@@ -198,13 +211,32 @@ static void show_action_msg(const char *line1, const char *line2) {
     clear(); draw_str(0, 0, line1); if (line2) draw_str(0, 12, line2); sh1106_update();
 }
 
+int beacon_spammer_mode_menu() {
+    int index = 0;
+    while (1) {
+        clear(); draw_str(0, 0, "Beacon Spammer Mode");
+        for (int i = 0; i < 4; i++) {
+            if (i == index) draw_str(0, 12+i*8, "> ");
+            draw_str(12, 12+i*8, beacon_modes[i]);
+        }
+        sh1106_update();
+        int rot = read_rotary();
+        if (rot) { 
+            index += rot; 
+            if (index < 0) index = 0; 
+            if (index > 3) index = 3; 
+        }
+        if (read_button(PIN_ROT_P)) return index;
+        if (read_button(PIN_BTN_BAK)) return -1;
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+}
+
 // --- SCANNING ---
 typedef enum { WIFI_SCAN_IDLE = 0, WIFI_SCAN_RUNNING, WIFI_SCAN_DONE } wifi_scan_state_t;
 static volatile wifi_scan_state_t scan_state = WIFI_SCAN_IDLE;
-static wifi_ap_record_t scan_results_local[64]; 
-static int scan_count_local = 0;
 
-// Filtered Scan Task
+// Smart Scan Task (Calculates Mesh Counts)
 static void wifi_scan_task(void *arg) {
     scan_state = WIFI_SCAN_RUNNING;
     scan_count_local = 0;
@@ -217,32 +249,34 @@ static void wifi_scan_task(void *arg) {
         char current_ssid[33]; 
 
         for (int i = 0; i < global_scans_count && unique_count < 64; ++i) {
-            // Prepare the display name
             memset(current_ssid, 0, 33);
-            
-            // IF HIDDEN: Generate unique name using last byte of MAC address
             if (strlen((char*)global_scans[i].ssid) == 0) {
                 snprintf(current_ssid, 32, "(Hidden) %02X", global_scans[i].bssid[5]);
             } else {
                 strncpy(current_ssid, (char*)global_scans[i].ssid, 32);
             }
 
-            // Check for duplicates in our local list
-            bool is_duplicate = false;
-            for (int k = 0; k < unique_count; k++) {
-                if (strcmp(current_ssid, (char*)scan_results_local[k].ssid) == 0) {
-                    is_duplicate = true;
-                    break;
+            #if HIDE_DUPLICATES
+                bool is_duplicate = false;
+                for (int k = 0; k < unique_count; k++) {
+                    if (strcmp(current_ssid, (char*)scan_results_local[k].record.ssid) == 0) {
+                        scan_results_local[k].mesh_count++;
+                        is_duplicate = true;
+                        break;
+                    }
                 }
-            }
-
-            // If unique, add it
-            if (!is_duplicate) {
-                scan_results_local[unique_count] = global_scans[i];
-                // Overwrite the SSID in our local copy with the generated name
-                strcpy((char*)scan_results_local[unique_count].ssid, current_ssid);
+                if (!is_duplicate) {
+                    scan_results_local[unique_count].record = global_scans[i];
+                    strcpy((char*)scan_results_local[unique_count].record.ssid, current_ssid);
+                    scan_results_local[unique_count].mesh_count = 1; 
+                    unique_count++;
+                }
+            #else
+                scan_results_local[unique_count].record = global_scans[i];
+                strcpy((char*)scan_results_local[unique_count].record.ssid, current_ssid);
+                scan_results_local[unique_count].mesh_count = 1;
                 unique_count++;
-            }
+            #endif
         }
         scan_count_local = unique_count;
     }
@@ -260,20 +294,25 @@ static void start_nonblocking_scan(void) {
 static void show_scan_results_screen(int selected) {
     clear(); draw_str(0, 0, "Scan results:");
     int count = (scan_state == WIFI_SCAN_DONE ? scan_count_local : global_scans_count);
-    wifi_ap_record_t *list = (scan_state == WIFI_SCAN_DONE ? scan_results_local : global_scans);
-
-    if (count <= 0 || list == NULL) { draw_str(0, 12, "No results"); sh1106_update(); return; }
+    
+    if (count <= 0) { draw_str(0, 12, "No results"); sh1106_update(); return; }
 
     int start = (selected > 3 && count > 6) ? selected - 3 : 0;
     for (int i = 0; i < 6 && (start + i) < count; i++) {
         int idx = start + i;
         char line[40];
         
-        // Show Band (2.4 or 5G)
-        const char* freq = (list[idx].primary > 14) ? "5G" : "2.4";
+        int nodes = scan_results_local[idx].mesh_count;
+        char mesh_str[16] = ""; 
+        if (nodes > 1) snprintf(mesh_str, 15, "(%d)", nodes);
+
+        const char* freq = (scan_results_local[idx].record.primary > 14) ? "5G" : "2.4";
         
-        // Format: "SSID (Freq) RSSI"
-        snprintf(line, 40, "%-10.10s %s %d", list[idx].ssid, freq, list[idx].rssi);
+        // --- FIX IS HERE ---
+        // OLD: snprintf(line, 40, "%-10.10s %s %d", scan_results_local[idx].record.ssid, mesh_str, scan_results_local[idx].record.rssi);
+        // NEW (Uses freq):
+        snprintf(line, 40, "%-10.10s %s %s %d", scan_results_local[idx].record.ssid, freq, mesh_str, scan_results_local[idx].record.rssi);
+        // -------------------
         
         if (idx == selected) draw_str(0, 12+i*8, "> ");
         draw_str(12, 12+i*8, line);
@@ -296,47 +335,40 @@ static void ui_task(void *arg) {
     while (1) {
         int rot = read_rotary();
         
-        // --- INPUT HANDLING PER MODE ---
+        // --- INPUT HANDLING ---
         if (rot) {
             if (ui_mode == MAIN_MENU) {
                 menu_index += rot;
-                if (menu_index < 0) menu_index = 0; 
-                else if (menu_index >= MAIN_ITEMS) menu_index = MAIN_ITEMS - 1;
+                if (menu_index < 0) menu_index = 0; else if (menu_index >= MAIN_ITEMS) menu_index = MAIN_ITEMS - 1;
             } 
             else if (ui_mode == SCAN_RESULTS_MENU) {
                 scan_selected += rot;
                 int max = (scan_state == WIFI_SCAN_DONE ? scan_count_local : global_scans_count);
-                if (scan_selected < 0) scan_selected = 0; 
-                else if (scan_selected >= max) scan_selected = max - 1;
+                if (scan_selected < 0) scan_selected = 0; else if (scan_selected >= max) scan_selected = max - 1;
             } 
             else if (ui_mode == BEACON_MENU) {
                 menu_index += rot;
-                if (menu_index < 0) menu_index = 0; 
-                else if (menu_index >= BEACON_COUNT) menu_index = BEACON_COUNT - 1;
+                if (menu_index < 0) menu_index = 0; else if (menu_index >= BEACON_COUNT) menu_index = BEACON_COUNT - 1;
             }
             else if (ui_mode == CAPTIVE_MENU) {
                 menu_index += rot;
-                if (menu_index < 0) menu_index = 0; 
-                else if (menu_index >= CP_COUNT) menu_index = CP_COUNT - 1;
+                if (menu_index < 0) menu_index = 0; else if (menu_index >= CP_COUNT) menu_index = CP_COUNT - 1;
             }
             else if (ui_mode == EVIL_TWIN_MENU) {
                 menu_index += rot;
-                if (menu_index < 0) menu_index = 0; 
-                else if (menu_index >= ET_COUNT) menu_index = ET_COUNT - 1;
+                if (menu_index < 0) menu_index = 0; else if (menu_index >= ET_COUNT) menu_index = ET_COUNT - 1;
             }
             else if (ui_mode == BLE_MENU) {
                 menu_index += rot;
-                if (menu_index < 0) menu_index = 0; 
-                else if (menu_index >= BLE_COUNT) menu_index = BLE_COUNT - 1;
+                if (menu_index < 0) menu_index = 0; else if (menu_index >= BLE_COUNT) menu_index = BLE_COUNT - 1;
             }
             else if (ui_mode == ATTACK_MENU) {
                 menu_index += rot;
-                if (menu_index < 0) menu_index = 0;
-                else if (menu_index >= ATTACK_COUNT) menu_index = ATTACK_COUNT - 1;
+                if (menu_index < 0) menu_index = 0; else if (menu_index >= ATTACK_COUNT) menu_index = ATTACK_COUNT - 1;
             }
         }
 
-        // --- DRAWING PER MODE ---
+        // --- DRAWING ---
         if (ui_mode == MAIN_MENU) {
             clear(); draw_str(0, 0, "HackingTool");
             for (int i = 0; i < MAIN_ITEMS; ++i) {
@@ -362,7 +394,7 @@ static void ui_task(void *arg) {
             clear(); draw_str(0, 0, "Attack Menu:");
             char ssid_local[64] = {0}; 
             if (global_scans && target_ap_index < global_scans_count)
-                snprintf(ssid_local, 63, "Target: %s", global_scans[target_ap_index].ssid);
+                snprintf(ssid_local, 63, "Target: %s", scan_results_local[target_ap_index].record.ssid);
             else snprintf(ssid_local, 63, "Target: Unknown");
             draw_str(0, 10, ssid_local);
 
@@ -399,7 +431,7 @@ static void ui_task(void *arg) {
             clear(); draw_str(0, 0, "Evil Twin");
             char ssid_local[64] = {0}; 
             if (global_scans && target_ap_index < global_scans_count)
-                snprintf(ssid_local, 63, "Target: %s", global_scans[target_ap_index].ssid);
+                snprintf(ssid_local, 63, "Target: %s", scan_results_local[target_ap_index].record.ssid);
             draw_str(0, 10, ssid_local[0] ? ssid_local : "Choose Template:");
 
             int start_idx = (menu_index > 3) ? menu_index - 3 : 0;
@@ -474,24 +506,40 @@ static void ui_task(void *arg) {
                 }
             }
             else if (ui_mode == ATTACK_MENU) {
-                if (menu_index == 0) htool_api_send_deauth_frame((uint8_t)target_ap_index, true);
-                else if (menu_index == 1) htool_api_send_disassociate_frame((uint8_t)target_ap_index, true);
-                else if (menu_index == 2) htool_api_send_deauth_frame((uint8_t)target_ap_index, false);
+                int global_idx = 0;
+                for(int i=0; i<global_scans_count; i++) {
+                    if (strcmp((char*)global_scans[i].ssid, (char*)scan_results_local[target_ap_index].record.ssid) == 0) {
+                        global_idx = i;
+                        break;
+                    }
+                }
+
+                if (menu_index == 0) htool_api_send_deauth_frame((uint8_t)global_idx, true);
+                else if (menu_index == 1) htool_api_send_disassociate_frame((uint8_t)global_idx, true);
+                else if (menu_index == 2) htool_api_send_deauth_frame((uint8_t)global_idx, false);
                 else if (menu_index == 3) {
                     if (htool_api_is_deauther_running()) {
                         htool_api_stop_deauther();
                     } else {
-                        menu_cnt = target_ap_index; 
+                        menu_cnt = global_idx; 
                         htool_api_start_deauther();
                     }
                 }
             }
             else if (ui_mode == EVIL_TWIN_MENU) {
+                int global_idx = 0;
+                for(int i=0; i<global_scans_count; i++) {
+                    if (strcmp((char*)global_scans[i].ssid, (char*)scan_results_local[target_ap_index].record.ssid) == 0) {
+                        global_idx = i;
+                        break;
+                    }
+                }
+
                 if (htool_api_is_evil_twin_running() && captive_portal_task_args.cp_index == menu_index) {
                     htool_api_stop_evil_twin();
                 } else {
                     htool_api_stop_evil_twin();
-                    htool_api_start_evil_twin((uint8_t)target_ap_index, (uint8_t)menu_index);
+                    htool_api_start_evil_twin((uint8_t)global_idx, (uint8_t)menu_index);
                 }
             }
             else if (ui_mode == BLE_MENU) {

@@ -79,7 +79,7 @@ void htool_ble_stop_adv();
 void htool_ble_start_adv();
 
 
-void htool_ble_set_adv_data(adv_t index);
+void htool_ble_set_adv_data(uint8_t index);
 
 
 uint8_t htool_ble_deinit();

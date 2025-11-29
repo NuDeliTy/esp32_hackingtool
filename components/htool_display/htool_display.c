@@ -45,6 +45,8 @@ SOFTWARE.
 static EventGroupHandle_t event;
 static hagl_backend_t *display;
 
+volatile bool scan_started = false;
+
 display_states cur_handling_state = ST_STARTUP;
 
 volatile uint64_t last_timestamp = 0;

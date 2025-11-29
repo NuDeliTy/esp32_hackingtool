@@ -1,5 +1,5 @@
 idf_component_register(
-    SRCS "hackingtool.c"
+    SRCS "hackingtool.c" "ble_monitor.c"
     INCLUDE_DIRS "."
     REQUIRES spi_flash htool_fonts htool_api
 )

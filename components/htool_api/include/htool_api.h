@@ -64,6 +64,8 @@ extern wifi_ap_record_t *global_scans;
 
 extern uint8_t global_scans_count;
 
+extern uint8_t menu_cnt;
+
 
 bool htool_api_ble_adv_running();
 

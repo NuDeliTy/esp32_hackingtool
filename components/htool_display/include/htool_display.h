@@ -24,9 +24,7 @@ SOFTWARE.
 
 #include <stdbool.h>
 
-uint8_t menu_cnt = 0;
-
-bool scan_started = false;
+extern volatile bool scan_started;
 
 bool deauth_all = false;
 

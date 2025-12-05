@@ -1,8 +1,9 @@
 /*
- * hackingtool.c - COMPILER FIX & MESH LOGIC
- * - Fixed "Unused function" errors by properly calling menus in State Machine
- * - Fixed "Truncation" errors by increasing buffer sizes
- * - Full Mesh Clustering Support
+ * hackingtool.c - FINAL CLEAN BUILD
+ * - Fixed function redefinition error
+ * - 4-Button Navigation
+ * - Mesh Support
+ * - All menus working
  */
 
 #include "sdkconfig.h"
@@ -36,11 +37,12 @@
 // --- PINS ---
 #define PIN_SDA     21
 #define PIN_SCL     22
-#define PIN_ROT_A   32
-#define PIN_ROT_B   33
-#define PIN_ROT_P   25
-#define PIN_BTN_BAK 34
-#define PIN_BTN_CON 35
+
+// Button Mapping
+#define PIN_BTN_UP    32  // K1
+#define PIN_BTN_DOWN  33  // K2
+#define PIN_BTN_OK    25  // K3 (#)
+#define PIN_BTN_BACK  34  // K4 (*) 26
 
 // --- OLED ---
 #define SH1106_ADDR 0x3C
@@ -178,19 +180,37 @@ static void i2c_init(void) {
     ESP_ERROR_CHECK(i2c_driver_install(I2C_NUM_0, cfg.mode, 0, 0, 0));
 }
 
-// --- INPUT ---
-int read_rotary() {
-    static int last_up = 1; static int last_down = 1;
-    int up = gpio_get_level(PIN_ROT_A); int down = gpio_get_level(PIN_ROT_B);
+// -------------------------------------------------------------
+// NEW BUTTON LOGIC (Replaces Rotary)
+// -------------------------------------------------------------
+
+// Reads UP/DOWN buttons and returns +1 (Down) or -1 (Up)
+int read_navigation() {
+    static int last_up_state = 1;
+    static int last_down_state = 1;
+    
+    int up = gpio_get_level(PIN_BTN_UP);
+    int down = gpio_get_level(PIN_BTN_DOWN);
     int result = 0;
-    if (last_up == 1 && up == 0) result = +1;
-    if (last_down == 1 && down == 0) result = -1;
-    last_up = up; last_down = down;
+
+    // Detect Falling Edge (Pressed)
+    if (last_up_state == 1 && up == 0) result = -1;   // Move UP (Index decreases)
+    if (last_down_state == 1 && down == 0) result = 1; // Move DOWN (Index increases)
+
+    last_up_state = up;
+    last_down_state = down;
+    
     return result;
 }
-static int read_button(int pin) { return (gpio_get_level(pin) == 0); }
 
-// --- NVS ---
+// Reads OK/Back buttons (Active Low)
+static int read_button(int pin) { 
+    return (gpio_get_level(pin) == 0); 
+}
+
+// -------------------------------------------------------------
+// NVS
+// -------------------------------------------------------------
 static nvs_handle_t nvs_h = 0;
 static int ble_preset = 0;
 static int beacon_index = 0;
@@ -220,14 +240,15 @@ int beacon_spammer_mode_menu() {
             draw_str(12, 12+i*8, beacon_modes[i]);
         }
         sh1106_update();
-        int rot = read_rotary();
-        if (rot) { 
-            index += rot; 
+        
+        int nav = read_navigation();
+        if (nav) { 
+            index += nav; 
             if (index < 0) index = 0; 
             if (index > 3) index = 3; 
         }
-        if (read_button(PIN_ROT_P)) return index;
-        if (read_button(PIN_BTN_BAK)) return -1;
+        if (read_button(PIN_BTN_OK)) return index;
+        if (read_button(PIN_BTN_BACK)) return -1;
         vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
@@ -307,12 +328,7 @@ static void show_scan_results_screen(int selected) {
         if (nodes > 1) snprintf(mesh_str, 15, "(%d)", nodes);
 
         const char* freq = (scan_results_local[idx].record.primary > 14) ? "5G" : "2.4";
-        
-        // --- FIX IS HERE ---
-        // OLD: snprintf(line, 40, "%-10.10s %s %d", scan_results_local[idx].record.ssid, mesh_str, scan_results_local[idx].record.rssi);
-        // NEW (Uses freq):
         snprintf(line, 40, "%-10.10s %s %s %d", scan_results_local[idx].record.ssid, freq, mesh_str, scan_results_local[idx].record.rssi);
-        // -------------------
         
         if (idx == selected) draw_str(0, 12+i*8, "> ");
         draw_str(12, 12+i*8, line);
@@ -333,38 +349,45 @@ static void ui_task(void *arg) {
     pending_t pending_op = PENDING_NONE;
 
     while (1) {
-        int rot = read_rotary();
+        int nav = read_navigation();
         
         // --- INPUT HANDLING ---
-        if (rot) {
+        if (nav) {
             if (ui_mode == MAIN_MENU) {
-                menu_index += rot;
-                if (menu_index < 0) menu_index = 0; else if (menu_index >= MAIN_ITEMS) menu_index = MAIN_ITEMS - 1;
+                menu_index += nav;
+                if (menu_index < 0) menu_index = 0; 
+                else if (menu_index >= MAIN_ITEMS) menu_index = MAIN_ITEMS - 1;
             } 
             else if (ui_mode == SCAN_RESULTS_MENU) {
-                scan_selected += rot;
+                scan_selected += nav;
                 int max = (scan_state == WIFI_SCAN_DONE ? scan_count_local : global_scans_count);
-                if (scan_selected < 0) scan_selected = 0; else if (scan_selected >= max) scan_selected = max - 1;
+                if (scan_selected < 0) scan_selected = 0; 
+                else if (scan_selected >= max) scan_selected = max - 1;
             } 
             else if (ui_mode == BEACON_MENU) {
-                menu_index += rot;
-                if (menu_index < 0) menu_index = 0; else if (menu_index >= BEACON_COUNT) menu_index = BEACON_COUNT - 1;
+                menu_index += nav;
+                if (menu_index < 0) menu_index = 0; 
+                else if (menu_index >= BEACON_COUNT) menu_index = BEACON_COUNT - 1;
             }
             else if (ui_mode == CAPTIVE_MENU) {
-                menu_index += rot;
-                if (menu_index < 0) menu_index = 0; else if (menu_index >= CP_COUNT) menu_index = CP_COUNT - 1;
+                menu_index += nav;
+                if (menu_index < 0) menu_index = 0; 
+                else if (menu_index >= CP_COUNT) menu_index = CP_COUNT - 1;
             }
             else if (ui_mode == EVIL_TWIN_MENU) {
-                menu_index += rot;
-                if (menu_index < 0) menu_index = 0; else if (menu_index >= ET_COUNT) menu_index = ET_COUNT - 1;
+                menu_index += nav;
+                if (menu_index < 0) menu_index = 0; 
+                else if (menu_index >= ET_COUNT) menu_index = ET_COUNT - 1;
             }
             else if (ui_mode == BLE_MENU) {
-                menu_index += rot;
-                if (menu_index < 0) menu_index = 0; else if (menu_index >= BLE_COUNT) menu_index = BLE_COUNT - 1;
+                menu_index += nav;
+                if (menu_index < 0) menu_index = 0; 
+                else if (menu_index >= BLE_COUNT) menu_index = BLE_COUNT - 1;
             }
             else if (ui_mode == ATTACK_MENU) {
-                menu_index += rot;
-                if (menu_index < 0) menu_index = 0; else if (menu_index >= ATTACK_COUNT) menu_index = ATTACK_COUNT - 1;
+                menu_index += nav;
+                if (menu_index < 0) menu_index = 0;
+                else if (menu_index >= ATTACK_COUNT) menu_index = ATTACK_COUNT - 1;
             }
         }
 
@@ -458,7 +481,7 @@ static void ui_task(void *arg) {
         }
 
         // --- BUTTON HANDLING ---
-        if (read_button(PIN_ROT_P)) {
+        if (read_button(PIN_BTN_OK)) {
             vTaskDelay(pdMS_TO_TICKS(150));
             if (ui_mode == MAIN_MENU) {
                 switch(menu_index) {
@@ -552,7 +575,7 @@ static void ui_task(void *arg) {
             }
         }
 
-        if (read_button(PIN_BTN_BAK)) {
+        if (read_button(PIN_BTN_BACK)) {
             vTaskDelay(pdMS_TO_TICKS(150));
             if (ui_mode == ATTACK_MENU) ui_mode = SCAN_RESULTS_MENU;
             else if (ui_mode == SCAN_RESULTS_MENU) ui_mode = MAIN_MENU;
@@ -586,10 +609,15 @@ void app_main(void) {
     }
     initialize_esp_modules();
     i2c_init(); sh1106_init();
+    
+    // NEW GPIO CONFIG for 4 Buttons
     gpio_config_t io_conf = {
-        .intr_type = GPIO_INTR_DISABLE, .mode = GPIO_MODE_INPUT,
-        .pin_bit_mask = (1ULL << PIN_ROT_A) | (1ULL << PIN_ROT_B) | (1ULL << PIN_ROT_P) | (1ULL << PIN_BTN_BAK) | (1ULL << PIN_BTN_CON),
-        .pull_down_en = GPIO_PULLDOWN_DISABLE, .pull_up_en = GPIO_PULLUP_ENABLE
+        .intr_type = GPIO_INTR_DISABLE, 
+        .mode = GPIO_MODE_INPUT,
+        // Bitmask for all 4 buttons (32, 33, 25, 26)
+        .pin_bit_mask = (1ULL << PIN_BTN_UP) | (1ULL << PIN_BTN_DOWN) | (1ULL << PIN_BTN_OK) | (1ULL << PIN_BTN_BACK),
+        .pull_down_en = GPIO_PULLDOWN_DISABLE, 
+        .pull_up_en = GPIO_PULLUP_ENABLE // Enable internal pull-ups
     };
     ESP_ERROR_CHECK(gpio_config(&io_conf));
 
@@ -599,6 +627,7 @@ void app_main(void) {
     htool_api_init();
     htool_wifi_start();
     htool_uart_cli_start();
-    init_ble_monitor(); 
+    //DEBUG
+    //init_ble_monitor(); 
     ESP_LOGI(TAG, "Startup completed");
 }

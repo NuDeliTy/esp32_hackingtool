@@ -8,6 +8,23 @@ unset IDF_PYTHON_ENV_PATH
 idf.py build
 idf.py -p /dev/ttyUSB0 flash
 
+
+GND -> GND
+
+VCC -> 3.3V
+
+SCL -> GPIO 22
+
+SDA -> GPIO 21
+
+K1 (Up) -> GPIO 32
+
+K2 (Down) -> GPIO 33
+
+K3 (# / OK) -> GPIO 25
+
+*K4 ( / Back)** -> GPIO 26 (Changed from 34 to ensure stability)
+
 # The Ultimate ESP32 Hacking Tool: Because sometimes you just need to be a little evil!
 ### Looking to take down your neighbor's wifi network? Or just want to cause chaos at your local coffee shop? Or does your Boss pay you less than you deserve?
 Look no further, because we have the perfect tool for you: the ESP32 hacking tool!

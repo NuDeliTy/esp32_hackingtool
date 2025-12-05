@@ -1,7 +1,8 @@
 /*
- * ble_monitor.c - Full UART (TX + RX)
- * - Adds RX Characteristic (Fixes "Disconnected" status in app)
- * - Enables sending commands from Phone -> ESP32
+ * ble_monitor.c - STABLE UART
+ * - Relaxed Advertising Interval (Fixes visibility issues)
+ * - Includes RX/TX Characteristics (Fixes App Disconnects)
+ * - 1s Warmup Delay (Fixes Connection Crashes)
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,9 +24,6 @@
 #define DEVICE_NAME "ESP32_HACKTOOL" 
 
 // Nordic UART Service UUIDs
-// Service: 6E400001...
-// RX (Write): 6E400002...
-// TX (Notify): 6E400003...
 static uint8_t service_uuid128[16] = {0x9E, 0xCA, 0xDC, 0x24, 0x0E, 0xE5, 0xA9, 0xE0, 0x93, 0xF3, 0xA3, 0xB5, 0x01, 0x00, 0x40, 0x6E};
 #define CHAR_RX_UUID           {0x9E, 0xCA, 0xDC, 0x24, 0x0E, 0xE5, 0xA9, 0xE0, 0x93, 0xF3, 0xA3, 0xB5, 0x02, 0x00, 0x40, 0x6E}
 #define CHAR_TX_UUID           {0x9E, 0xCA, 0xDC, 0x24, 0x0E, 0xE5, 0xA9, 0xE0, 0x93, 0xF3, 0xA3, 0xB5, 0x03, 0x00, 0x40, 0x6E}
@@ -40,22 +38,27 @@ static bool device_connected = false;
 static bool monitor_active = false;
 static int64_t connection_time = 0; 
 
-// Log Hook to capture prints
 vprintf_like_t original_log_handler = NULL;
 
 void ble_send_log(const char *data, int len) {
+    // Safety Checks
     if (!monitor_active || !device_connected || gatts_if_handle == ESP_GATT_IF_NONE || tx_char_handle == 0) return;
-    if ((esp_timer_get_time() - connection_time) < 1000000) return; // Warmup delay
+    // Warmup Delay (1s)
+    if ((esp_timer_get_time() - connection_time) < 1000000) return; 
 
     int sent = 0;
-    if (len > 256) len = 256; 
+    if (len > 256) len = 256; // Cap max length
 
     while (sent < len) {
         int chunk_len = (len - sent) > 20 ? 20 : (len - sent);
         esp_err_t err = esp_ble_gatts_send_indicate(gatts_if_handle, conn_id, tx_char_handle, chunk_len, (uint8_t *)&data[sent], false);
-        if (err == ESP_OK) sent += chunk_len;
-        else break; 
-        esp_rom_delay_us(15000); 
+        
+        if (err == ESP_OK) {
+            sent += chunk_len;
+        } else {
+            break; // Congestion, drop packet
+        }
+        esp_rom_delay_us(20000); // 20ms throttle for stability
     }
 }
 
@@ -73,8 +76,11 @@ static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param
     if (!monitor_active) return;
     if (event == ESP_GAP_BLE_ADV_DATA_SET_COMPLETE_EVT) {
         esp_ble_gap_start_advertising(&(esp_ble_adv_params_t){
-            .adv_int_min = 0x20, .adv_int_max = 0x40,
-            .adv_type = ADV_TYPE_IND, .own_addr_type = BLE_ADDR_TYPE_PUBLIC,
+            // Relaxed Interval (0xA0 = 100ms). Fixes "Bad Advertising".
+            .adv_int_min = 0xA0, 
+            .adv_int_max = 0xA0,
+            .adv_type = ADV_TYPE_IND, 
+            .own_addr_type = BLE_ADDR_TYPE_PUBLIC,
             .channel_map = ADV_CHNL_ALL, 
             .adv_filter_policy = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY,
         });
@@ -87,6 +93,8 @@ static void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_
         case ESP_GATTS_REG_EVT:
             gatts_if_handle = gatts_if;
             esp_ble_gap_set_device_name(DEVICE_NAME);
+            
+            // Advertise Service UUID
             esp_ble_gap_config_adv_data(&(esp_ble_adv_data_t){
                 .set_scan_rsp = false, .include_name = true, .include_txpower = true,
                 .min_interval = 0x0006, .max_interval = 0x0010, .appearance = 0x00, 
@@ -95,16 +103,17 @@ static void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_
                 .service_uuid_len = 16, .p_service_uuid = service_uuid128, 
                 .flag = (ESP_BLE_ADV_FLAG_GEN_DISC | ESP_BLE_ADV_FLAG_BREDR_NOT_SPT),
             });
+
             esp_gatt_srvc_id_t service_id = { .id.uuid.len = ESP_UUID_LEN_128 };
             memcpy(service_id.id.uuid.uuid.uuid128, service_uuid128, 16);
-            esp_ble_gatts_create_service(gatts_if, &service_id, 6); // Handle count increased
+            esp_ble_gatts_create_service(gatts_if, &service_id, 6); 
             break;
 
         case ESP_GATTS_CREATE_EVT:
             {
                 service_handle = param->create.service_handle;
                 
-                // 1. Create RX Characteristic (Write)
+                // 1. RX (Write)
                 uint8_t rx_uuid128[] = CHAR_RX_UUID;
                 esp_bt_uuid_t rx_uuid = { .len = ESP_UUID_LEN_128 };
                 memcpy(rx_uuid.uuid.uuid128, rx_uuid128, 16);
@@ -113,7 +122,7 @@ static void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_
                                        ESP_GATT_CHAR_PROP_BIT_WRITE | ESP_GATT_CHAR_PROP_BIT_WRITE_NR, 
                                        NULL, NULL);
 
-                // 2. Create TX Characteristic (Notify)
+                // 2. TX (Notify)
                 uint8_t tx_uuid128[] = CHAR_TX_UUID;
                 esp_bt_uuid_t tx_uuid = { .len = ESP_UUID_LEN_128 };
                 memcpy(tx_uuid.uuid.uuid128, tx_uuid128, 16);
@@ -126,7 +135,6 @@ static void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_
 
         case ESP_GATTS_ADD_CHAR_EVT:
             {
-                // Check which UUID was added to assign handles correctly
                 uint8_t rx_uuid128[] = CHAR_RX_UUID;
                 if (memcmp(param->add_char.char_uuid.uuid.uuid128, rx_uuid128, 16) == 0) {
                     rx_char_handle = param->add_char.attr_handle;
@@ -145,8 +153,9 @@ static void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_
         case ESP_GATTS_DISCONNECT_EVT:
             device_connected = false;
             if (monitor_active) {
+                // Restart Advertising on Disconnect
                 esp_ble_gap_start_advertising(&(esp_ble_adv_params_t){
-                    .adv_int_min = 0x20, .adv_int_max = 0x40,
+                    .adv_int_min = 0xA0, .adv_int_max = 0xA0,
                     .adv_type = ADV_TYPE_IND, .own_addr_type = BLE_ADDR_TYPE_PUBLIC,
                     .channel_map = ADV_CHNL_ALL, 
                     .adv_filter_policy = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY,
@@ -154,27 +163,20 @@ static void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_
             }
             break;
 
-        // --- NEW: Handle Incoming Data from Phone ---
+        // Handle commands (e.g. "scan" from phone)
         case ESP_GATTS_WRITE_EVT:
             if (param->write.handle == rx_char_handle && param->write.len > 0) {
-                // Ensure null termination for string safety
                 char *cmd = malloc(param->write.len + 1);
                 memcpy(cmd, param->write.value, param->write.len);
                 cmd[param->write.len] = 0;
 
-                // Log it to USB Serial so you see it in VS Code
-                if (original_log_handler) { // Use original handler to avoid loop
-                    printf("BLE CMD RECEIVED: %s\n", cmd);
-                }
+                if (original_log_handler) printf("BLE CMD: %s\n", cmd);
 
-                // Simple Test Logic
-                if (strstr(cmd, "ping")) {
-                    printf("pong\n"); // This will go back to phone via the hook
-                }
+                // Pass command to CLI system? 
+                // For now just ping pong to verify connection
+                if (strstr(cmd, "ping")) printf("pong\n");
 
                 free(cmd);
-                
-                // Send response if needed (optional)
                 if (param->write.need_rsp) {
                     esp_ble_gatts_send_response(gatts_if, param->write.conn_id, param->write.trans_id, ESP_GATT_OK, NULL);
                 }
@@ -215,5 +217,5 @@ void init_ble_monitor() {
     if (!original_log_handler) {
         original_log_handler = esp_log_set_vprintf(ble_log_hook);
     }
-    printf("BLE Monitor Started. Connect to 'ESP32_HACKTOOL'.\n");
+    printf("BLE Monitor Started.\n");
 }

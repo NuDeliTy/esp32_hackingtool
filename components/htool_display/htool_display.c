@@ -862,7 +862,8 @@ static void menu_task() {
                     }
                     else {
                         swprintf(evil_twin_ssid, sizeof(evil_twin_ssid), u"%.*s", strlen((const char*)global_scans[menu_cnt].ssid) > 26 ? 26 : strlen((const char*)global_scans[menu_cnt].ssid), global_scans[menu_cnt].ssid);
-                        htool_api_start_evil_twin(menu_cnt, captive_portal_task_args.cp_index);
+                        // Added 'true' to enable MAC cloning by default from the OLED menu
+                        htool_api_start_evil_twin(menu_cnt, captive_portal_task_args.cp_index, true);
                     }
                 }
                 if (long_press_left) {

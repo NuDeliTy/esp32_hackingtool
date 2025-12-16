@@ -1,0 +1,979 @@
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/mdns:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 898k tom  5 joulu  15:55  libmdns.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/mdns/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_mdns.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/mdns/CMakeFiles/__idf_mdns.dir:
+.rw-r--r-- 651k tom  5 joulu  15:53 󰆧 mdns.c.obj
+.rw-r--r-- 171k tom  5 joulu  15:53 󰆧 mdns_console.c.obj
+.rw-r--r--  75k tom  5 joulu  15:53 󰆧 mdns_networking.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/mqtt:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 366k tom  5 joulu  15:55  libmqtt.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/mqtt/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_mqtt.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/mqtt/CMakeFiles/__idf_mqtt.dir:
+drwxr-xr-x - tom  5 joulu  15:55  esp-mqtt
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/mqtt/CMakeFiles/__idf_mqtt.dir/esp-mqtt:
+drwxr-xr-x    - tom  5 joulu  15:55  lib
+.rw-r--r-- 205k tom  5 joulu  15:55 󰆧 mqtt_client.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/mqtt/CMakeFiles/__idf_mqtt.dir/esp-mqtt/lib:
+.rw-r--r-- 84k tom  5 joulu  15:55 󰆧 mqtt_msg.c.obj
+.rw-r--r-- 53k tom  5 joulu  15:55 󰆧 mqtt_outbox.c.obj
+.rw-r--r-- 23k tom  5 joulu  15:55 󰆧 platform_esp32_idf.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/newlib:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+drwxr-xr-x    - tom  5 joulu  15:53  port
+.rw-r--r-- 1,7k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 364k tom  5 joulu  15:53  libnewlib.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/newlib/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_newlib.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/newlib/CMakeFiles/__idf_newlib.dir:
+drwxr-xr-x   - tom  5 joulu  15:53  port
+.rw-r--r-- 19k tom  5 joulu  15:53 󰆧 abort.c.obj
+.rw-r--r-- 18k tom  5 joulu  15:53 󰆧 assert.c.obj
+.rw-r--r-- 22k tom  5 joulu  15:53 󰆧 heap.c.obj
+.rw-r--r-- 55k tom  5 joulu  15:53 󰆧 locks.c.obj
+.rw-r--r-- 17k tom  5 joulu  15:53 󰆧 newlib_init.c.obj
+.rw-r--r-- 17k tom  5 joulu  15:53 󰆧 poll.c.obj
+.rw-r--r-- 13k tom  5 joulu  15:53 󰆧 pthread.c.obj
+.rw-r--r-- 11k tom  5 joulu  15:53 󰆧 random.c.obj
+.rw-r--r-- 16k tom  5 joulu  15:53 󰆧 reent_init.c.obj
+.rw-r--r-- 19k tom  5 joulu  15:53 󰆧 syscalls.c.obj
+.rw-r--r-- 14k tom  5 joulu  15:53 󰆧 termios.c.obj
+.rw-r--r-- 80k tom  5 joulu  15:53 󰆧 time.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/newlib/CMakeFiles/__idf_newlib.dir/port:
+.rw-r--r-- 59k tom  5 joulu  15:53 󰆧 esp_time_impl.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/newlib/port:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/newlib/port/CMakeFiles:
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/nghttp:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 2,0M tom  5 joulu  15:53  libnghttp.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/nghttp/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_nghttp.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/nghttp/CMakeFiles/__idf_nghttp.dir:
+drwxr-xr-x - tom  5 joulu  15:53  nghttp2
+drwxr-xr-x - tom  5 joulu  15:53  port
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/nghttp/CMakeFiles/__idf_nghttp.dir/nghttp2:
+drwxr-xr-x - tom  5 joulu  15:53  lib
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/nghttp/CMakeFiles/__idf_nghttp.dir/nghttp2/lib:
+.rw-r--r--  62k tom  5 joulu  15:53 󰆧 nghttp2_buf.c.obj
+.rw-r--r--  35k tom  5 joulu  15:53 󰆧 nghttp2_callbacks.c.obj
+.rw-r--r-- 9,1k tom  5 joulu  15:53 󰆧 nghttp2_debug.c.obj
+.rw-r--r-- 138k tom  5 joulu  15:53 󰆧 nghttp2_frame.c.obj
+.rw-r--r-- 235k tom  5 joulu  15:53 󰆧 nghttp2_hd.c.obj
+.rw-r--r--  25k tom  5 joulu  15:53 󰆧 nghttp2_hd_huffman.c.obj
+.rw-r--r--  27k tom  5 joulu  15:53 󰆧 nghttp2_hd_huffman_data.c.obj
+.rw-r--r--  54k tom  5 joulu  15:53 󰆧 nghttp2_helper.c.obj
+.rw-r--r--  90k tom  5 joulu  15:53 󰆧 nghttp2_http.c.obj
+.rw-r--r--  31k tom  5 joulu  15:53 󰆧 nghttp2_map.c.obj
+.rw-r--r--  18k tom  5 joulu  15:53 󰆧 nghttp2_mem.c.obj
+.rw-r--r--  13k tom  5 joulu  15:53 󰆧 nghttp2_npn.c.obj
+.rw-r--r--  27k tom  5 joulu  15:53 󰆧 nghttp2_option.c.obj
+.rw-r--r--  25k tom  5 joulu  15:53 󰆧 nghttp2_outbound_item.c.obj
+.rw-r--r--  31k tom  5 joulu  15:53 󰆧 nghttp2_pq.c.obj
+.rw-r--r--  13k tom  5 joulu  15:53 󰆧 nghttp2_priority_spec.c.obj
+.rw-r--r--  21k tom  5 joulu  15:53 󰆧 nghttp2_queue.c.obj
+.rw-r--r--  21k tom  5 joulu  15:53 󰆧 nghttp2_rcbuf.c.obj
+.rw-r--r-- 654k tom  5 joulu  15:53 󰆧 nghttp2_session.c.obj
+.rw-r--r-- 113k tom  5 joulu  15:53 󰆧 nghttp2_stream.c.obj
+.rw-r--r-- 104k tom  5 joulu  15:53 󰆧 nghttp2_submit.c.obj
+.rw-r--r--  10k tom  5 joulu  15:53 󰆧 nghttp2_version.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/nghttp/CMakeFiles/__idf_nghttp.dir/port:
+.rw-r--r-- 216k tom  5 joulu  15:53 󰆧 http_parser.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/nvs_flash:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 1,5M tom  5 joulu  15:53  libnvs_flash.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/nvs_flash/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_nvs_flash.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/nvs_flash/CMakeFiles/__idf_nvs_flash.dir:
+drwxr-xr-x - tom  5 joulu  15:53 󰣞 src
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/nvs_flash/CMakeFiles/__idf_nvs_flash.dir/src:
+.rw-r--r-- 264k tom  5 joulu  15:53 󰆧 nvs_api.cpp.obj
+.rw-r--r-- 133k tom  5 joulu  15:53 󰆧 nvs_cxx_api.cpp.obj
+.rw-r--r--  69k tom  5 joulu  15:53 󰆧 nvs_handle_locked.cpp.obj
+.rw-r--r-- 118k tom  5 joulu  15:53 󰆧 nvs_handle_simple.cpp.obj
+.rw-r--r--  60k tom  5 joulu  15:53 󰆧 nvs_item_hash_list.cpp.obj
+.rw-r--r-- 204k tom  5 joulu  15:53 󰆧 nvs_page.cpp.obj
+.rw-r--r-- 125k tom  5 joulu  15:53 󰆧 nvs_pagemanager.cpp.obj
+.rw-r--r--  51k tom  5 joulu  15:53 󰆧 nvs_partition.cpp.obj
+.rw-r--r--  37k tom  5 joulu  15:53 󰆧 nvs_partition_lookup.cpp.obj
+.rw-r--r-- 146k tom  5 joulu  15:53 󰆧 nvs_partition_manager.cpp.obj
+.rw-r--r-- 231k tom  5 joulu  15:53 󰆧 nvs_storage.cpp.obj
+.rw-r--r--  35k tom  5 joulu  15:53 󰆧 nvs_types.cpp.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/openssl:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 491k tom  5 joulu  15:55  libopenssl.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/openssl/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_openssl.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/openssl/CMakeFiles/__idf_openssl.dir:
+drwxr-xr-x - tom  5 joulu  15:55  library
+drwxr-xr-x - tom  5 joulu  15:55  platform
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/openssl/CMakeFiles/__idf_openssl.dir/library:
+.rw-r--r--  30k tom  5 joulu  15:55 󰆧 ssl_bio.c.obj
+.rw-r--r--  15k tom  5 joulu  15:55 󰆧 ssl_cert.c.obj
+.rw-r--r--  20k tom  5 joulu  15:55 󰆧 ssl_err.c.obj
+.rw-r--r-- 161k tom  5 joulu  15:55 󰆧 ssl_lib.c.obj
+.rw-r--r--  38k tom  5 joulu  15:55 󰆧 ssl_methods.c.obj
+.rw-r--r--  42k tom  5 joulu  15:55 󰆧 ssl_pkey.c.obj
+.rw-r--r--  16k tom  5 joulu  15:55 󰆧 ssl_stack.c.obj
+.rw-r--r--  50k tom  5 joulu  15:55 󰆧 ssl_x509.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/openssl/CMakeFiles/__idf_openssl.dir/platform:
+.rw-r--r--  106k tom  5 joulu  15:55 󰆧 ssl_pm.c.obj
+.rw-r--r-- 10,0k tom  5 joulu  15:55 󰆧 ssl_port.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/partition_table:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r--   93 tom  5 joulu  15:53  partition_table-flash_args.in
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/partition_table/CMakeFiles:
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/perfmon:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r--  67k tom  5 joulu  15:53  libperfmon.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/perfmon/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_perfmon.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/perfmon/CMakeFiles/__idf_perfmon.dir:
+.rw-r--r-- 21k tom  5 joulu  15:53 󰆧 xtensa_perfmon_access.c.obj
+.rw-r--r-- 27k tom  5 joulu  15:53 󰆧 xtensa_perfmon_apis.c.obj
+.rw-r--r-- 18k tom  5 joulu  15:53 󰆧 xtensa_perfmon_masks.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protobuf-c:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 445k tom  5 joulu  15:53  libprotobuf-c.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protobuf-c/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_protobuf-c.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protobuf-c/CMakeFiles/__idf_protobuf-c.dir:
+drwxr-xr-x - tom  5 joulu  15:53  protobuf-c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protobuf-c/CMakeFiles/__idf_protobuf-c.dir/protobuf-c:
+drwxr-xr-x - tom  5 joulu  15:53  protobuf-c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protobuf-c/CMakeFiles/__idf_protobuf-c.dir/protobuf-c/protobuf-c:
+.rw-r--r-- 444k tom  5 joulu  15:53 󰆧 protobuf-c.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protocomm:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 553k tom  5 joulu  15:55  libprotocomm.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protocomm/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_protocomm.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protocomm/CMakeFiles/__idf_protocomm.dir:
+drwxr-xr-x - tom  5 joulu  15:53  proto-c
+drwxr-xr-x - tom  5 joulu  15:53 󰣞 src
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protocomm/CMakeFiles/__idf_protocomm.dir/proto-c:
+.rw-r--r-- 11k tom  5 joulu  15:53 󰆧 constants.pb-c.c.obj
+.rw-r--r-- 47k tom  5 joulu  15:53 󰆧 sec0.pb-c.c.obj
+.rw-r--r-- 68k tom  5 joulu  15:53 󰆧 sec1.pb-c.c.obj
+.rw-r--r-- 30k tom  5 joulu  15:53 󰆧 session.pb-c.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protocomm/CMakeFiles/__idf_protocomm.dir/src:
+drwxr-xr-x - tom  5 joulu  15:53  common
+drwxr-xr-x - tom  5 joulu  15:53  security
+drwxr-xr-x - tom  5 joulu  15:53  simple_ble
+drwxr-xr-x - tom  5 joulu  15:53  transports
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protocomm/CMakeFiles/__idf_protocomm.dir/src/common:
+.rw-r--r-- 49k tom  5 joulu  15:53 󰆧 protocomm.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protocomm/CMakeFiles/__idf_protocomm.dir/src/security:
+.rw-r--r-- 28k tom  5 joulu  15:53 󰆧 security0.c.obj
+.rw-r--r-- 72k tom  5 joulu  15:53 󰆧 security1.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protocomm/CMakeFiles/__idf_protocomm.dir/src/simple_ble:
+.rw-r--r-- 72k tom  5 joulu  15:53 󰆧 simple_ble.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/protocomm/CMakeFiles/__idf_protocomm.dir/src/transports:
+.rw-r--r-- 79k tom  5 joulu  15:53 󰆧 protocomm_ble.c.obj
+.rw-r--r-- 43k tom  5 joulu  15:53 󰆧 protocomm_console.c.obj
+.rw-r--r-- 49k tom  5 joulu  15:53 󰆧 protocomm_httpd.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/pthread:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 181k tom  5 joulu  15:53  libpthread.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/pthread/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_pthread.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/pthread/CMakeFiles/__idf_pthread.dir:
+.rw-r--r-- 106k tom  5 joulu  15:53 󰆧 pthread.c.obj
+.rw-r--r--  36k tom  5 joulu  15:53 󰆧 pthread_cond_var.c.obj
+.rw-r--r--  38k tom  5 joulu  15:53 󰆧 pthread_local_storage.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/sdmmc:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 389k tom  5 joulu  15:53  libsdmmc.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/sdmmc/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_sdmmc.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/sdmmc/CMakeFiles/__idf_sdmmc.dir:
+.rw-r--r-- 72k tom  5 joulu  15:53 󰆧 sdmmc_cmd.c.obj
+.rw-r--r-- 51k tom  5 joulu  15:53 󰆧 sdmmc_common.c.obj
+.rw-r--r-- 35k tom  5 joulu  15:53 󰆧 sdmmc_init.c.obj
+.rw-r--r-- 88k tom  5 joulu  15:53 󰆧 sdmmc_io.c.obj
+.rw-r--r-- 67k tom  5 joulu  15:53 󰆧 sdmmc_mmc.c.obj
+.rw-r--r-- 74k tom  5 joulu  15:53 󰆧 sdmmc_sd.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/soc:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+drwxr-xr-x    - tom  5 joulu  15:53  esp32
+.rw-r--r-- 1,7k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 482k tom  5 joulu  15:53  libsoc.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/soc/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_soc.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/soc/CMakeFiles/__idf_soc.dir:
+drwxr-xr-x    - tom  5 joulu  15:53  esp32
+.rw-r--r-- 8,8k tom  5 joulu  15:53 󰆧 lldesc.c.obj
+.rw-r--r--  24k tom  5 joulu  15:53 󰆧 memory_layout_utils.c.obj
+.rw-r--r-- 1,1k tom  5 joulu  15:53 󰆧 soc_include_legacy_warn.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/soc/CMakeFiles/__idf_soc.dir/esp32:
+.rw-r--r--  44k tom  5 joulu  15:53 󰆧 adc_periph.c.obj
+.rw-r--r--  42k tom  5 joulu  15:53 󰆧 dac_periph.c.obj
+.rw-r--r--  13k tom  5 joulu  15:53 󰆧 gpio_periph.c.obj
+.rw-r--r--  17k tom  5 joulu  15:53 󰆧 i2c_periph.c.obj
+.rw-r--r--  24k tom  5 joulu  15:53 󰆧 i2s_periph.c.obj
+.rw-r--r-- 9,9k tom  5 joulu  15:53 󰆧 interrupts.c.obj
+.rw-r--r--  15k tom  5 joulu  15:53 󰆧 ledc_periph.c.obj
+.rw-r--r--  15k tom  5 joulu  15:53 󰆧 pcnt_periph.c.obj
+.rw-r--r-- 9,8k tom  5 joulu  15:53 󰆧 rmt_periph.c.obj
+.rw-r--r--  43k tom  5 joulu  15:53 󰆧 rtc_io_periph.c.obj
+.rw-r--r--  64k tom  5 joulu  15:53 󰆧 sdio_slave_periph.c.obj
+.rw-r--r--  18k tom  5 joulu  15:53 󰆧 sdmmc_periph.c.obj
+.rw-r--r-- 9,2k tom  5 joulu  15:53 󰆧 sigmadelta_periph.c.obj
+.rw-r--r--  13k tom  5 joulu  15:53 󰆧 soc_memory_layout.c.obj
+.rw-r--r--  32k tom  5 joulu  15:53 󰆧 spi_periph.c.obj
+.rw-r--r--  15k tom  5 joulu  15:53 󰆧 timer_periph.c.obj
+.rw-r--r--  42k tom  5 joulu  15:53 󰆧 touch_sensor_periph.c.obj
+.rw-r--r--  20k tom  5 joulu  15:53 󰆧 uart_periph.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/soc/esp32:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/soc/esp32/CMakeFiles:
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/spi_flash:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 1,1M tom  5 joulu  15:53  libspi_flash.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/spi_flash/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_spi_flash.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/spi_flash/CMakeFiles/__idf_spi_flash.dir:
+drwxr-xr-x    - tom  5 joulu  15:53  esp32
+.rw-r--r--  50k tom  5 joulu  15:53 󰆧 cache_utils.c.obj
+.rw-r--r-- 164k tom  5 joulu  15:53 󰆧 esp_flash_api.c.obj
+.rw-r--r-- 104k tom  5 joulu  15:53 󰆧 esp_flash_spi_init.c.obj
+.rw-r--r--  72k tom  5 joulu  15:53 󰆧 flash_mmap.c.obj
+.rw-r--r--  42k tom  5 joulu  15:53 󰆧 flash_ops.c.obj
+.rw-r--r--  57k tom  5 joulu  15:53 󰆧 memspi_host_driver.c.obj
+.rw-r--r--  80k tom  5 joulu  15:53 󰆧 partition.c.obj
+.rw-r--r--  20k tom  5 joulu  15:53 󰆧 spi_flash_chip_boya.c.obj
+.rw-r--r--  16k tom  5 joulu  15:53 󰆧 spi_flash_chip_drivers.c.obj
+.rw-r--r--  24k tom  5 joulu  15:53 󰆧 spi_flash_chip_gd.c.obj
+.rw-r--r--  78k tom  5 joulu  15:53 󰆧 spi_flash_chip_generic.c.obj
+.rw-r--r--  22k tom  5 joulu  15:53 󰆧 spi_flash_chip_issi.c.obj
+.rw-r--r--  18k tom  5 joulu  15:53 󰆧 spi_flash_chip_mxic.c.obj
+.rw-r--r--  37k tom  5 joulu  15:53 󰆧 spi_flash_chip_winbond.c.obj
+.rw-r--r-- 111k tom  5 joulu  15:53 󰆧 spi_flash_os_func_app.c.obj
+.rw-r--r--  29k tom  5 joulu  15:53 󰆧 spi_flash_os_func_noos.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/spi_flash/CMakeFiles/__idf_spi_flash.dir/esp32:
+.rw-r--r--  24k tom  5 joulu  15:53 󰆧 flash_ops_esp32.c.obj
+.rw-r--r-- 112k tom  5 joulu  15:53 󰆧 spi_flash_rom_patch.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/spiffs:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 763k tom  5 joulu  15:55  libspiffs.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/spiffs/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:55  __idf_spiffs.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/spiffs/CMakeFiles/__idf_spiffs.dir:
+drwxr-xr-x    - tom  5 joulu  15:53  spiffs
+.rw-r--r-- 131k tom  5 joulu  15:55 󰆧 esp_spiffs.c.obj
+.rw-r--r--  34k tom  5 joulu  15:55 󰆧 spiffs_api.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/spiffs/CMakeFiles/__idf_spiffs.dir/spiffs:
+drwxr-xr-x - tom  5 joulu  15:55 󰣞 src
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/spiffs/CMakeFiles/__idf_spiffs.dir/spiffs/src:
+.rw-r--r--  43k tom  5 joulu  15:55 󰆧 spiffs_cache.c.obj
+.rw-r--r-- 102k tom  5 joulu  15:55 󰆧 spiffs_check.c.obj
+.rw-r--r--  65k tom  5 joulu  15:55 󰆧 spiffs_gc.c.obj
+.rw-r--r-- 163k tom  5 joulu  15:55 󰆧 spiffs_hydrogen.c.obj
+.rw-r--r-- 222k tom  5 joulu  15:55 󰆧 spiffs_nucleus.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/tcp_transport:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 352k tom  5 joulu  15:53  libtcp_transport.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/tcp_transport/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_tcp_transport.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/tcp_transport/CMakeFiles/__idf_tcp_transport.dir:
+.rw-r--r--  68k tom  5 joulu  15:53 󰆧 transport.c.obj
+.rw-r--r--  93k tom  5 joulu  15:53 󰆧 transport_ssl.c.obj
+.rw-r--r--  67k tom  5 joulu  15:53 󰆧 transport_tcp.c.obj
+.rw-r--r--  10k tom  5 joulu  15:53 󰆧 transport_utils.c.obj
+.rw-r--r-- 111k tom  5 joulu  15:53 󰆧 transport_ws.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/tcpip_adapter:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r--  30k tom  5 joulu  15:53  libtcpip_adapter.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/tcpip_adapter/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_tcpip_adapter.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/tcpip_adapter/CMakeFiles/__idf_tcpip_adapter.dir:
+.rw-r--r-- 29k tom  5 joulu  15:53 󰆧 tcpip_adapter_compat.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/tinyusb:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/tinyusb/CMakeFiles:
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/ulp:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r--  87k tom  5 joulu  15:53  libulp.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/ulp/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_ulp.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/ulp/CMakeFiles/__idf_ulp.dir:
+.rw-r--r-- 53k tom  5 joulu  15:53 󰆧 ulp.c.obj
+.rw-r--r-- 34k tom  5 joulu  15:53 󰆧 ulp_macro.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/unity:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 227k tom  5 joulu  15:53  libunity.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/unity/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_unity.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/unity/CMakeFiles/__idf_unity.dir:
+drwxr-xr-x   - tom  5 joulu  15:53  unity
+.rw-r--r-- 26k tom  5 joulu  15:53 󰆧 unity_port_esp32.c.obj
+.rw-r--r-- 48k tom  5 joulu  15:53 󰆧 unity_runner.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/unity/CMakeFiles/__idf_unity.dir/unity:
+drwxr-xr-x - tom  5 joulu  15:53 󰣞 src
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/unity/CMakeFiles/__idf_unity.dir/unity/src:
+.rw-r--r-- 152k tom  5 joulu  15:53 󰆧 unity.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/vfs:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 407k tom  5 joulu  15:53  libvfs.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/vfs/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_vfs.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/vfs/CMakeFiles/__idf_vfs.dir:
+.rw-r--r-- 211k tom  5 joulu  15:53 󰆧 vfs.c.obj
+.rw-r--r--  60k tom  5 joulu  15:53 󰆧 vfs_semihost.c.obj
+.rw-r--r-- 134k tom  5 joulu  15:53 󰆧 vfs_uart.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wear_levelling:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 272k tom  5 joulu  15:55  libwear_levelling.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wear_levelling/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_wear_levelling.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wear_levelling/CMakeFiles/__idf_wear_levelling.dir:
+.rw-r--r-- 4,0k tom  5 joulu  15:53 󰆧 crc32.cpp.obj
+.rw-r--r--  34k tom  5 joulu  15:53 󰆧 Partition.cpp.obj
+.rw-r--r--  28k tom  5 joulu  15:53 󰆧 SPI_Flash.cpp.obj
+.rw-r--r--  48k tom  5 joulu  15:53 󰆧 wear_levelling.cpp.obj
+.rw-r--r--  36k tom  5 joulu  15:53 󰆧 WL_Ext_Perf.cpp.obj
+.rw-r--r--  34k tom  5 joulu  15:53 󰆧 WL_Ext_Safe.cpp.obj
+.rw-r--r--  86k tom  5 joulu  15:53 󰆧 WL_Flash.cpp.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wifi_provisioning:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 743k tom  5 joulu  15:55  libwifi_provisioning.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wifi_provisioning/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_wifi_provisioning.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wifi_provisioning/CMakeFiles/__idf_wifi_provisioning.dir:
+drwxr-xr-x - tom  5 joulu  15:55  proto-c
+drwxr-xr-x - tom  5 joulu  15:55 󰣞 src
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wifi_provisioning/CMakeFiles/__idf_wifi_provisioning.dir/proto-c:
+.rw-r--r--  91k tom  5 joulu  15:55 󰆧 wifi_config.pb-c.c.obj
+.rw-r--r--  31k tom  5 joulu  15:55 󰆧 wifi_constants.pb-c.c.obj
+.rw-r--r-- 101k tom  5 joulu  15:55 󰆧 wifi_scan.pb-c.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wifi_provisioning/CMakeFiles/__idf_wifi_provisioning.dir/src:
+.rw-r--r--  56k tom  5 joulu  15:55 󰆧 handlers.c.obj
+.rw-r--r-- 199k tom  5 joulu  15:55 󰆧 manager.c.obj
+.rw-r--r--  53k tom  5 joulu  15:55 󰆧 scheme_ble.c.obj
+.rw-r--r--  38k tom  5 joulu  15:55 󰆧 scheme_console.c.obj
+.rw-r--r--  51k tom  5 joulu  15:55 󰆧 scheme_softap.c.obj
+.rw-r--r--  54k tom  5 joulu  15:55 󰆧 wifi_config.c.obj
+.rw-r--r--  63k tom  5 joulu  15:55 󰆧 wifi_scan.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 5,1M tom  5 joulu  15:53  libwpa_supplicant.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_wpa_supplicant.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir:
+drwxr-xr-x - tom  5 joulu  15:53  port
+drwxr-xr-x - tom  5 joulu  15:53 󰣞 src
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir/port:
+.rw-r--r-- 15k tom  5 joulu  15:53 󰆧 os_xtensa.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir/src:
+drwxr-xr-x - tom  5 joulu  15:53  ap
+drwxr-xr-x - tom  5 joulu  15:53  common
+drwxr-xr-x - tom  5 joulu  15:53  crypto
+drwxr-xr-x - tom  5 joulu  15:53  eap_peer
+drwxr-xr-x - tom  5 joulu  15:53  esp_supplicant
+drwxr-xr-x - tom  5 joulu  15:53  rsn_supp
+drwxr-xr-x - tom  5 joulu  15:53  utils
+drwxr-xr-x - tom  5 joulu  15:53  wps
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir/src/ap:
+.rw-r--r--  53k tom  5 joulu  15:53 󰆧 ap_config.c.obj
+.rw-r--r--  38k tom  5 joulu  15:53 󰆧 ieee802_1x.c.obj
+.rw-r--r-- 209k tom  5 joulu  15:53 󰆧 wpa_auth.c.obj
+.rw-r--r--  83k tom  5 joulu  15:53 󰆧 wpa_auth_ie.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir/src/common:
+.rw-r--r-- 628k tom  5 joulu  15:53 󰆧 dpp.c.obj
+.rw-r--r-- 149k tom  5 joulu  15:53 󰆧 sae.c.obj
+.rw-r--r--  85k tom  5 joulu  15:53 󰆧 wpa_common.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir/src/crypto:
+.rw-r--r--  33k tom  5 joulu  15:53 󰆧 aes-ccm.c.obj
+.rw-r--r--  22k tom  5 joulu  15:53 󰆧 aes-omac1.c.obj
+.rw-r--r--  31k tom  5 joulu  15:53 󰆧 aes-siv.c.obj
+.rw-r--r--  14k tom  5 joulu  15:53 󰆧 aes-unwrap.c.obj
+.rw-r--r--  14k tom  5 joulu  15:53 󰆧 aes-wrap.c.obj
+.rw-r--r--  44k tom  5 joulu  15:53 󰆧 ccmp.c.obj
+.rw-r--r--  39k tom  5 joulu  15:53 󰆧 crypto_mbedtls-bignum.c.obj
+.rw-r--r-- 116k tom  5 joulu  15:53 󰆧 crypto_mbedtls-ec.c.obj
+.rw-r--r--  81k tom  5 joulu  15:53 󰆧 crypto_mbedtls.c.obj
+.rw-r--r--  18k tom  5 joulu  15:53 󰆧 crypto_ops.c.obj
+.rw-r--r--  52k tom  5 joulu  15:53 󰆧 des-internal.c.obj
+.rw-r--r--  13k tom  5 joulu  15:53 󰆧 dh_group5.c.obj
+.rw-r--r--  22k tom  5 joulu  15:53 󰆧 dh_groups.c.obj
+.rw-r--r--  26k tom  5 joulu  15:53 󰆧 md4-internal.c.obj
+.rw-r--r--  48k tom  5 joulu  15:53 󰆧 ms_funcs.c.obj
+.rw-r--r--  14k tom  5 joulu  15:53 󰆧 rc4.c.obj
+.rw-r--r--  14k tom  5 joulu  15:53 󰆧 sha1-prf.c.obj
+.rw-r--r--  16k tom  5 joulu  15:53 󰆧 sha1-tlsprf.c.obj
+.rw-r--r--  15k tom  5 joulu  15:53 󰆧 sha256-kdf.c.obj
+.rw-r--r--  17k tom  5 joulu  15:53 󰆧 sha256-prf.c.obj
+.rw-r--r--  13k tom  5 joulu  15:53 󰆧 sha256-tlsprf.c.obj
+.rw-r--r--  13k tom  5 joulu  15:53 󰆧 sha384-tlsprf.c.obj
+.rw-r--r-- 103k tom  5 joulu  15:53 󰆧 tls_mbedtls.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir/src/eap_peer:
+.rw-r--r--  10k tom  5 joulu  15:53 󰆧 chap.c.obj
+.rw-r--r-- 109k tom  5 joulu  15:53 󰆧 eap.c.obj
+.rw-r--r--  30k tom  5 joulu  15:53 󰆧 eap_common.c.obj
+.rw-r--r--  98k tom  5 joulu  15:53 󰆧 eap_mschapv2.c.obj
+.rw-r--r-- 131k tom  5 joulu  15:53 󰆧 eap_peap.c.obj
+.rw-r--r--  14k tom  5 joulu  15:53 󰆧 eap_peap_common.c.obj
+.rw-r--r--  34k tom  5 joulu  15:53 󰆧 eap_tls.c.obj
+.rw-r--r--  95k tom  5 joulu  15:53 󰆧 eap_tls_common.c.obj
+.rw-r--r-- 151k tom  5 joulu  15:53 󰆧 eap_ttls.c.obj
+.rw-r--r--  17k tom  5 joulu  15:53 󰆧 mschapv2.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir/src/esp_supplicant:
+.rw-r--r-- 106k tom  5 joulu  15:53 󰆧 esp_dpp.c.obj
+.rw-r--r--  47k tom  5 joulu  15:53 󰆧 esp_hostap.c.obj
+.rw-r--r-- 146k tom  5 joulu  15:53 󰆧 esp_wpa2.c.obj
+.rw-r--r--  56k tom  5 joulu  15:53 󰆧 esp_wpa3.c.obj
+.rw-r--r--  77k tom  5 joulu  15:53 󰆧 esp_wpa_main.c.obj
+.rw-r--r--  42k tom  5 joulu  15:53 󰆧 esp_wpas_glue.c.obj
+.rw-r--r-- 242k tom  5 joulu  15:53 󰆧 esp_wps.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir/src/rsn_supp:
+.rw-r--r--  75k tom  5 joulu  15:53 󰆧 pmksa_cache.c.obj
+.rw-r--r-- 211k tom  5 joulu  15:53 󰆧 wpa.c.obj
+.rw-r--r--  77k tom  5 joulu  15:53 󰆧 wpa_ie.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir/src/utils:
+.rw-r--r-- 28k tom  5 joulu  15:53 󰆧 base64.c.obj
+.rw-r--r-- 18k tom  5 joulu  15:53 󰆧 bitfield.c.obj
+.rw-r--r-- 70k tom  5 joulu  15:53 󰆧 common.c.obj
+.rw-r--r-- 10k tom  5 joulu  15:53 󰆧 ext_password.c.obj
+.rw-r--r-- 71k tom  5 joulu  15:53 󰆧 json.c.obj
+.rw-r--r-- 17k tom  5 joulu  15:53 󰆧 uuid.c.obj
+.rw-r--r-- 21k tom  5 joulu  15:53 󰆧 wpa_debug.c.obj
+.rw-r--r-- 36k tom  5 joulu  15:53 󰆧 wpabuf.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/wpa_supplicant/CMakeFiles/__idf_wpa_supplicant.dir/src/wps:
+.rw-r--r--  99k tom  5 joulu  15:53 󰆧 wps.c.obj
+.rw-r--r-- 114k tom  5 joulu  15:53 󰆧 wps_attr_build.c.obj
+.rw-r--r--  63k tom  5 joulu  15:53 󰆧 wps_attr_parse.c.obj
+.rw-r--r--  49k tom  5 joulu  15:53 󰆧 wps_attr_process.c.obj
+.rw-r--r--  69k tom  5 joulu  15:53 󰆧 wps_common.c.obj
+.rw-r--r--  95k tom  5 joulu  15:53 󰆧 wps_dev_attr.c.obj
+.rw-r--r-- 179k tom  5 joulu  15:53 󰆧 wps_enrollee.c.obj
+.rw-r--r-- 334k tom  5 joulu  15:53 󰆧 wps_registrar.c.obj
+.rw-r--r-- 7,9k tom  5 joulu  15:53 󰆧 wps_validate.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/xtensa:
+drwxr-xr-x    - tom  5 joulu  15:53  CMakeFiles
+.rw-r--r-- 1,5k tom  5 joulu  15:53  cmake_install.cmake
+.rw-r--r-- 130k tom  5 joulu  15:53  libxtensa.a
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/xtensa/CMakeFiles:
+drwxr-xr-x - tom  5 joulu  15:53  __idf_xtensa.dir
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/xtensa/CMakeFiles/__idf_xtensa.dir:
+drwxr-xr-x    - tom  5 joulu  15:53  esp32
+.rw-r--r--  30k tom  5 joulu  15:53 󰆧 debug_helpers.c.obj
+.rw-r--r-- 2,2k tom  5 joulu  15:53 󰆧 debug_helpers_asm.S.obj
+.rw-r--r-- 4,2k tom  5 joulu  15:53 󰆧 eri.c.obj
+.rw-r--r--  27k tom  5 joulu  15:53 󰆧 expression_with_stack_xtensa.c.obj
+.rw-r--r-- 4,5k tom  5 joulu  15:53 󰆧 expression_with_stack_xtensa_asm.S.obj
+.rw-r--r--  11k tom  5 joulu  15:53 󰆧 trax.c.obj
+.rw-r--r--  26k tom  5 joulu  15:53 󰆧 xtensa_intr.c.obj
+.rw-r--r-- 7,6k tom  5 joulu  15:53 󰆧 xtensa_intr_asm.S.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/xtensa/CMakeFiles/__idf_xtensa.dir/esp32:
+.rw-r--r-- 17k tom  5 joulu  15:53 󰆧 trax_init.c.obj
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/partition_table:
+.rw-r--r-- 3,1k tom  5 joulu  15:53  partition-table.bin
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components:
+drwxr-xr-x - tom 29 marras 19:12  axp192
+drwxr-xr-x - tom 29 marras 19:12  axp202
+drwxr-xr-x - tom 29 marras 19:12  esp_i2c_helper
+drwxr-xr-x - tom 29 marras 19:12  hagl
+drwxr-xr-x - tom 29 marras 19:12  hagl_hal
+drwxr-xr-x - tom 29 marras 19:12  htool_api
+drwxr-xr-x - tom 29 marras 19:12  htool_ble
+drwxr-xr-x - tom 29 marras 19:12  htool_display
+drwxr-xr-x - tom 29 marras 19:12  htool_fonts
+drwxr-xr-x - tom 29 marras 19:12  htool_modbus
+drwxr-xr-x - tom 29 marras 19:12  htool_netman
+drwxr-xr-x - tom 29 marras 19:12  htool_nvsm
+drwxr-xr-x - tom 29 marras 19:12  htool_pn532_spi
+drwxr-xr-x - tom 29 marras 19:12  htool_spi
+drwxr-xr-x - tom 29 marras 19:12  htool_system
+drwxr-xr-x - tom 29 marras 19:12  htool_uart
+drwxr-xr-x - tom 29 marras 19:12  htool_wifi
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/axp192:
+drwxr-xr-x    - tom 29 marras 19:12  sdkconfig
+.rw-r--r--  14k tom 29 marras 19:12  axp192.c
+.rw-r--r-- 8,2k tom 29 marras 19:12  axp192.h
+.rw-r--r-- 3,6k tom 29 marras 19:12  axp192_config.h
+.rw-r--r-- 4,7k tom 29 marras 19:12  CHANGELOG.md
+.rw-r--r--  161 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r--   91 tom 29 marras 19:12  component.mk
+.rw-r--r--  34k tom 29 marras 19:12 󰡯 Kconfig
+.rw-r--r-- 1,1k tom 29 marras 19:12  LICENSE.txt
+.rw-r--r-- 7,2k tom 29 marras 19:12 󰂺 README.md
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/axp192/sdkconfig:
+.rw-r--r-- 2,4k tom 29 marras 19:12  m5stickc.defaults
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/axp202:
+drwxr-xr-x    - tom 29 marras 19:12  sdkconfig
+.rw-r--r-- 7,1k tom 29 marras 19:12  axp202.c
+.rw-r--r-- 6,4k tom 29 marras 19:12  axp202.h
+.rw-r--r-- 3,0k tom 29 marras 19:12  axp202_config.h
+.rw-r--r--   66 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r--   51 tom 29 marras 19:12  component.mk
+.rw-r--r--  25k tom 29 marras 19:12 󰡯 Kconfig
+.rw-r--r-- 1,1k tom 29 marras 19:12  LICENSE.txt
+.rw-r--r-- 2,8k tom 29 marras 19:12 󰂺 README.md
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/axp202/sdkconfig:
+.rw-r--r-- 9,2k tom 29 marras 19:12  t-watch-2020.defaults
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/esp_i2c_helper:
+.rw-r--r--   71 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r--   51 tom 29 marras 19:12  component.mk
+.rw-r--r-- 4,5k tom 29 marras 19:12  i2c_helper.c
+.rw-r--r-- 2,1k tom 29 marras 19:12  i2c_helper.h
+.rw-r--r--  529 tom 29 marras 19:12 󰡯 Kconfig
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/hagl:
+drwxr-xr-x    - tom 29 marras 19:12  include
+drwxr-xr-x    - tom 29 marras 19:12 󰣞 src
+.rw-r--r--  417 tom 29 marras 19:12  CHANGELOG.md
+.rw-r--r-- 2,1k tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 5,2k tom 29 marras 19:12  CODING_STANDARDS.md
+.rw-r--r--   99 tom 29 marras 19:12  component.mk
+.rw-r--r--  211 tom 29 marras 19:12 󰡯 Kconfig
+.rw-r--r-- 1,1k tom 29 marras 19:12  LICENSE
+.rw-r--r--  14k tom 29 marras 19:12 󰂺 README.md
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/hagl/include:
+drwxr-xr-x    - tom 29 marras 19:12  hagl
+.rw-r--r-- 2,6k tom 29 marras 19:12  aps.h
+.rw-r--r-- 1,5k tom 29 marras 19:12  config.h
+.rw-r--r--  84k tom 29 marras 19:12  font5x7.h
+.rw-r--r--  74k tom 29 marras 19:12  font5x8.h
+.rw-r--r--  76k tom 29 marras 19:12  font6x9.h
+.rw-r--r-- 2,4k tom 29 marras 19:12  fontx.h
+.rw-r--r-- 2,5k tom 29 marras 19:12  fps.h
+.rw-r--r-- 2,3k tom 29 marras 19:12  hagl.h
+.rw-r--r-- 1,5k tom 29 marras 19:12  hsl.h
+.rw-r--r-- 1,7k tom 29 marras 19:12  rgb332.h
+.rw-r--r-- 1,5k tom 29 marras 19:12  rgb565.h
+.rw-r--r-- 1,7k tom 29 marras 19:12  rgb888.h
+.rw-r--r-- 3,3k tom 29 marras 19:12  tjpgd.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/hagl/include/hagl:
+.rw-r--r-- 2,3k tom 29 marras 19:12  backend.h
+.rw-r--r-- 2,4k tom 29 marras 19:12  bitmap.h
+.rw-r--r-- 2,0k tom 29 marras 19:12  blit.h
+.rw-r--r-- 2,9k tom 29 marras 19:12  char.h
+.rw-r--r-- 2,0k tom 29 marras 19:12  circle.h
+.rw-r--r-- 1,8k tom 29 marras 19:12  clip.h
+.rw-r--r-- 1,6k tom 29 marras 19:12  color.h
+.rw-r--r-- 2,1k tom 29 marras 19:12  ellipse.h
+.rw-r--r-- 1,7k tom 29 marras 19:12  hline.h
+.rw-r--r-- 1,8k tom 29 marras 19:12  image.h
+.rw-r--r-- 1,7k tom 29 marras 19:12  line.h
+.rw-r--r-- 2,0k tom 29 marras 19:12  pixel.h
+.rw-r--r-- 2,5k tom 29 marras 19:12  polygon.h
+.rw-r--r-- 2,7k tom 29 marras 19:12  rectangle.h
+.rw-r--r-- 2,1k tom 29 marras 19:12  surface.h
+.rw-r--r-- 2,2k tom 29 marras 19:12  triangle.h
+.rw-r--r-- 1,7k tom 29 marras 19:12  vline.h
+.rw-r--r-- 1,5k tom 29 marras 19:12  window.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/hagl/src:
+.rw-r--r-- 7,2k tom 29 marras 19:12  bitmap.c
+.rw-r--r-- 3,2k tom 29 marras 19:12  fontx.c
+.rw-r--r-- 2,6k tom 29 marras 19:12  hagl.c
+.rw-r--r-- 3,5k tom 29 marras 19:12  hagl_blit.c
+.rw-r--r-- 3,9k tom 29 marras 19:12  hagl_char.c
+.rw-r--r-- 3,1k tom 29 marras 19:12  hagl_circle.c
+.rw-r--r-- 4,0k tom 29 marras 19:12  hagl_clip.c
+.rw-r--r-- 1,5k tom 29 marras 19:12  hagl_color.c
+.rw-r--r-- 4,1k tom 29 marras 19:12  hagl_ellipse.c
+.rw-r--r-- 2,3k tom 29 marras 19:12  hagl_hline.c
+.rw-r--r-- 3,3k tom 29 marras 19:12  hagl_image.c
+.rw-r--r-- 2,2k tom 29 marras 19:12  hagl_line.c
+.rw-r--r-- 2,4k tom 29 marras 19:12  hagl_pixel.c
+.rw-r--r-- 3,8k tom 29 marras 19:12  hagl_polygon.c
+.rw-r--r-- 7,6k tom 29 marras 19:12  hagl_rectangle.c
+.rw-r--r-- 1,8k tom 29 marras 19:12  hagl_triangle.c
+.rw-r--r-- 2,3k tom 29 marras 19:12  hagl_vline.c
+.rw-r--r-- 3,2k tom 29 marras 19:12  hsl.c
+.rw-r--r-- 1,8k tom 29 marras 19:12  rgb565.c
+.rw-r--r-- 2,8k tom 29 marras 19:12  rgb888.c
+.rw-r--r--  40k tom 29 marras 19:12  tjpgd.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/hagl_hal:
+drwxr-xr-x    - tom 29 marras 19:12  include
+drwxr-xr-x    - tom 29 marras 19:12  sdkconfig
+drwxr-xr-x    - tom 29 marras 19:12 󰣞 src
+.rw-r--r--  174 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r--   61 tom 29 marras 19:12  component.mk
+.rw-r--r-- 5,8k tom 29 marras 19:12 󰡯 Kconfig
+.rw-r--r-- 1,1k tom 29 marras 19:12  LICENSE
+.rw-r--r-- 5,0k tom 29 marras 19:12 󰂺 README.md
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/hagl_hal/include:
+.rw-r--r-- 2,7k tom 29 marras 19:12  hagl_hal.h
+.rw-r--r-- 1,5k tom 29 marras 19:12  hagl_hal_color.h
+.rw-r--r-- 5,0k tom 29 marras 19:12  mipi_dcs.h
+.rw-r--r-- 2,5k tom 29 marras 19:12  mipi_display.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/hagl_hal/sdkconfig:
+.rw-r--r-- 1,2k tom 29 marras 19:12  m5stack-core2.defaults
+.rw-r--r-- 1,1k tom 29 marras 19:12  m5stack.defaults
+.rw-r--r-- 1,3k tom 29 marras 19:12  m5stickc-landscape.defaults
+.rw-r--r-- 1,4k tom 29 marras 19:12  m5stickc-plus-landscape.defaults
+.rw-r--r-- 1,4k tom 29 marras 19:12  m5stickc-plus-portrait.defaults
+.rw-r--r-- 1,3k tom 29 marras 19:12  m5stickc-portrait.defaults
+.rw-r--r-- 1,1k tom 29 marras 19:12  ttgo-t-display.defaults
+.rw-r--r-- 1,2k tom 29 marras 19:12  ttgo-t4-v13.defaults
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/hagl_hal/src:
+.rw-r--r-- 6,5k tom 29 marras 19:12  hagl_hal_double.c
+.rw-r--r-- 3,3k tom 29 marras 19:12  hagl_hal_single.c
+.rw-r--r-- 5,7k tom 29 marras 19:12  hagl_hal_triple.c
+.rw-r--r--  10k tom 29 marras 19:12  mipi_display.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_api:
+drwxr-xr-x    - tom 29 marras 19:12  include
+.rw-r--r--  210 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 4,7k tom  5 joulu  15:50  htool_api.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_api/include:
+.rw-r--r-- 3,7k tom  5 joulu  15:51  htool_api.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_ble:
+drwxr-xr-x    - tom 29 marras 19:12  include
+.rw-r--r--  128 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 8,7k tom 29 marras 22:14  htool_ble.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_ble/include:
+.rw-r--r-- 2,7k tom 29 marras 22:14  htool_ble.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_display:
+drwxr-xr-x   - tom 29 marras 19:12  include
+.rw-r--r-- 178 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 63k tom 29 marras 23:35  htool_display.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_display/include:
+.rw-r--r-- 1,5k tom 29 marras 23:34  htool_display.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_fonts:
+drwxr-xr-x  - tom 29 marras 19:12 󱧼 build
+drwxr-xr-x  - tom 29 marras 19:12  include
+.rw-r--r-- 65 tom 29 marras 19:12  CMakeLists.txt
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_fonts/build:
+drwxr-xr-x - tom 29 marras 19:12  CMakeFiles
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_fonts/build/CMakeFiles:
+drwxr-xr-x    - tom 29 marras 19:12  4.2.0
+.rw-r--r--   85 tom 29 marras 19:12  cmake.check_cache
+.rw-r--r-- 191k tom 29 marras 19:12  CMakeConfigureLog.yaml
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_fonts/build/CMakeFiles/4.2.0:
+drwxr-xr-x    - tom 29 marras 19:12  CompilerIdC
+drwxr-xr-x    - tom 29 marras 19:12  CompilerIdCXX
+.rw-r--r-- 2,9k tom 29 marras 19:12  CMakeCCompiler.cmake
+.rw-r--r-- 6,6k tom 29 marras 19:12  CMakeCXXCompiler.cmake
+.rwxr-xr-x  15k tom 29 marras 19:12  CMakeDetermineCompilerABI_C.bin
+.rwxr-xr-x  15k tom 29 marras 19:12  CMakeDetermineCompilerABI_CXX.bin
+.rw-r--r--  402 tom 29 marras 19:12  CMakeSystem.cmake
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_fonts/build/CMakeFiles/4.2.0/CompilerIdC:
+.rw-r--r-- 29k tom 29 marras 19:12  CMakeCCompilerId.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_fonts/build/CMakeFiles/4.2.0/CompilerIdCXX:
+.rw-r--r-- 29k tom 29 marras 19:12  CMakeCXXCompilerId.cpp
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_fonts/include:
+.rw-r--r-- 5,4k tom 29 marras 19:12  font6x8.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_modbus:
+drwxr-xr-x   - tom 29 marras 19:12  include
+.rw-r--r-- 144 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 12k tom 29 marras 19:12  htool_modbus.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_modbus/include:
+.rw-r--r-- 1,7k tom 29 marras 19:12  htool_modbus.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_netman:
+drwxr-xr-x   - tom 29 marras 19:12  include
+.rw-r--r-- 186 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 50k tom 29 marras 19:12  htool_netman.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_netman/include:
+.rw-r--r-- 1,3k tom 29 marras 19:12  htool_netman.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_nvsm:
+drwxr-xr-x   - tom 29 marras 19:12  include
+.rw-r--r-- 126 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 11k tom 29 marras 19:12  htool_nvsm.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_nvsm/include:
+.rw-r--r-- 2,6k tom 29 marras 19:12  htool_nvsm.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_pn532_spi:
+drwxr-xr-x    - tom 29 marras 19:12  include
+.rw-r--r--  131 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 7,5k tom 29 marras 19:12  htool_pn532_spi.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_pn532_spi/include:
+.rw-r--r-- 1,6k tom 29 marras 19:12  htool_pn532_spi.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_spi:
+drwxr-xr-x    - tom 29 marras 19:12  include
+.rw-r--r--   95 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 2,7k tom 29 marras 19:12  htool_spi.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_spi/include:
+.rw-r--r-- 1,3k tom 29 marras 19:12  htool_spi.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_system:
+drwxr-xr-x    - tom 29 marras 19:12  include
+.rw-r--r--  131 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 5,6k tom 29 marras 19:12  htool_system.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_system/include:
+.rw-r--r-- 1,4k tom 29 marras 19:12  htool_system.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_uart:
+drwxr-xr-x   - tom 29 marras 19:12  include
+.rw-r--r-- 168 tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r-- 48k tom  5 joulu  15:52  htool_uart.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_uart/include:
+.rw-r--r-- 1,1k tom 29 marras 19:12  htool_uart.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_wifi:
+drwxr-xr-x    - tom 29 marras 19:12  captive_portals
+drwxr-xr-x    - tom 29 marras 19:12  include
+.rw-r--r-- 1,0k tom 29 marras 19:12  CMakeLists.txt
+.rw-r--r--  36k tom  5 joulu  15:55  htool_wifi.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_wifi/captive_portals:
+drwxr-xr-x - tom 29 marras 19:12  apple
+drwxr-xr-x - tom 29 marras 19:12  facebook
+drwxr-xr-x - tom 29 marras 19:12  google
+drwxr-xr-x - tom 29 marras 19:12  mcdonalds
+drwxr-xr-x - tom 29 marras 19:12  router
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_wifi/captive_portals/apple:
+.rw-r--r-- 31k tom 29 marras 19:12  apple.html
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_wifi/captive_portals/facebook:
+.rw-r--r-- 38k tom 29 marras 19:12  facebook.html
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_wifi/captive_portals/google:
+.rw-r--r-- 10k tom 29 marras 19:12  google.html
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_wifi/captive_portals/mcdonalds:
+.rw-r--r-- 124k tom 29 marras 19:12  mcdonalds.html
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_wifi/captive_portals/router:
+.rw-r--r--  16k tom 29 marras 19:12  1_1.html
+.rw-r--r-- 136k tom 29 marras 19:12  a1.html
+.rw-r--r-- 6,9k tom 29 marras 19:12  asus.html
+.rw-r--r--  13k tom 29 marras 19:12  att.html
+.rw-r--r--  30k tom 29 marras 19:12  fritzbox.html
+.rw-r--r--  96k tom 29 marras 19:12  globe.html
+.rw-r--r--  21k tom 29 marras 19:12  huawei.html
+.rw-r--r--  34k tom 29 marras 19:12  magenta.html
+.rw-r--r-- 9,5k tom 29 marras 19:12  netgear.html
+.rw-r--r--  11k tom 29 marras 19:12  o2.html
+.rw-r--r-- 209k tom 29 marras 19:12  pldt.html
+.rw-r--r--  30k tom 29 marras 19:12  router.html
+.rw-r--r--  50k tom 29 marras 19:12  swisscom.html
+.rw-r--r--  24k tom 29 marras 19:12  tplink.html
+.rw-r--r-- 5,4k tom 29 marras 19:12  verizon.html
+.rw-r--r--  50k tom 29 marras 19:12  vodafone.html
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/components/htool_wifi/include:
+.rw-r--r-- 3,0k tom 29 marras 19:12  htool_wifi.h
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/main:
+drwxr-xr-x    - tom 29 marras 19:52 󱧼 build
+.rw-r--r-- 8,5k tom  5 joulu  13:29  ble_monitor.c
+.rw-r--r--  110 tom 29 marras 20:26  ble_monitor.h
+.rw-r--r--  188 tom 29 marras 20:37  CMakeLists.txt
+.rw-r--r--  24k tom  5 joulu  15:44  hackingtool.c
+.rw-r--r-- 9,5k tom 29 marras 19:12  hackingtool.c.backup
+.rw-r--r--  16k tom 29 marras 19:12  hackingtool.c.backup2
+.rw-r--r--  23k tom 29 marras 19:12  hackingtool.c.backup3
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/main/build:
+drwxr-xr-x - tom 29 marras 19:52  CMakeFiles
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/main/build/CMakeFiles:
+drwxr-xr-x    - tom 29 marras 19:52  4.2.0
+drwxr-xr-x    - tom 29 marras 19:52  CMakeScratch
+drwxr-xr-x    - tom 29 marras 19:52  pkgRedirects
+.rw-r--r--   85 tom 29 marras 19:52  cmake.check_cache
+.rw-r--r-- 347k tom 29 marras 19:52  CMakeConfigureLog.yaml
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/main/build/CMakeFiles/4.2.0:
+drwxr-xr-x    - tom 29 marras 19:52  CompilerIdC
+drwxr-xr-x    - tom 29 marras 19:52  CompilerIdCXX
+.rw-r--r-- 2,9k tom 29 marras 19:52  CMakeCCompiler.cmake
+.rw-r--r-- 6,6k tom 29 marras 19:52  CMakeCXXCompiler.cmake
+.rwxr-xr-x  15k tom 29 marras 19:52  CMakeDetermineCompilerABI_C.bin
+.rwxr-xr-x  15k tom 29 marras 19:52  CMakeDetermineCompilerABI_CXX.bin
+.rw-r--r--  402 tom 29 marras 19:52  CMakeSystem.cmake
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/main/build/CMakeFiles/4.2.0/CompilerIdC:
+drwxr-xr-x   - tom 29 marras 19:52  tmp
+.rwxr-xr-x 16k tom 29 marras 19:52  a.out
+.rw-r--r-- 29k tom 29 marras 19:52  CMakeCCompilerId.c
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/main/build/CMakeFiles/4.2.0/CompilerIdC/tmp:
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/main/build/CMakeFiles/4.2.0/CompilerIdCXX:
+drwxr-xr-x   - tom 29 marras 19:52  tmp
+.rwxr-xr-x 16k tom 29 marras 19:52  a.out
+.rw-r--r-- 29k tom 29 marras 19:52  CMakeCXXCompilerId.cpp
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/main/build/CMakeFiles/4.2.0/CompilerIdCXX/tmp:
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/main/build/CMakeFiles/CMakeScratch:
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/main/build/CMakeFiles/pkgRedirects:
+
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/precompiled_files:
+.rw-r--r--  18k tom 29 marras 19:12  bootloader.bin
+.rw-r--r-- 2,2M tom 29 marras 19:12  hackingtool.bin
+.rw-r--r-- 3,1k tom 29 marras 19:12  partition-table.bin
+
+╭─tom@tom in ~ took 0s
+╰─λ

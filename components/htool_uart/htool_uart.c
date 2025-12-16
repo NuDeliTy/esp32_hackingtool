@@ -417,7 +417,9 @@ static int evil_twin_command() {
                     }
                 }
             }
-            htool_api_start_evil_twin(ssid_input - 1, number);
+            // UPDATE: Added 'true' (clone_mac) as the default argument for UART command
+            htool_api_start_evil_twin(ssid_input - 1, number, true);
+            
             if (htool_api_is_evil_twin_running()) {
                 printf("Press \033[31;1many\033[36;1m key for stop!\nUser entries:\n");
                 char c;

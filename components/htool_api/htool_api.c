@@ -1,24 +1,24 @@
 /*
-Copyright (c) 2023 kl0ibi
+ C *opyright (c) 2023 kl0ibi
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
+*/
 #include <stdio.h>
 #include "htool_api.h"
 #include "htool_wifi.h"
@@ -126,7 +126,8 @@ void htool_api_stop_captive_portal() {
     }
 }
 
-void htool_api_start_evil_twin(uint8_t ssid_index, uint8_t cp_index) {
+// Updated to accept clone_mac
+void htool_api_start_evil_twin(uint8_t ssid_index, uint8_t cp_index, bool clone_mac) {
     evil_twin_is_running = true;
     esp_wifi_scan_stop();
     vTaskDelay(pdMS_TO_TICKS(100));
@@ -134,6 +135,7 @@ void htool_api_start_evil_twin(uint8_t ssid_index, uint8_t cp_index) {
     captive_portal_task_args.is_evil_twin = true;
     captive_portal_task_args.ssid_index = ssid_index;
     captive_portal_task_args.cp_index = cp_index;
+    captive_portal_task_args.clone_mac = clone_mac; // Store the cloning preference
     htool_wifi_captive_portal_start();
 }
 

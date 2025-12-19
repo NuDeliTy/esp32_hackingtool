@@ -8,14 +8,15 @@
 #include <stdint.h>
 
 // --- CONFIGURATION ---
-// Change this pin to wherever you attach your IR LED (Anode to Pin, Cathode to GND)
-#define HTOOL_IR_LED_GPIO 13 
+// Change this pin to wherever you attach your IR LED
+#define HTOOL_IR_LED_GPIO 23
 
 // Initialize the RMT driver for IR transmission
 void htool_ir_init(void);
 
-// Start the "TV-B-Gone" attack sequence in a background task
-void htool_ir_start_attack(void);
+// Start the "TV-B-Gone" attack sequence
+// category: 0=TV, 1=Projectors, 2=Audio, 3=All
+void htool_ir_start_attack(int category);
 
 // Stop the attack sequence
 void htool_ir_stop_attack(void);

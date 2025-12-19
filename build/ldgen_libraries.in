@@ -76,13 +76,15 @@ $<TARGET_FILE:__idf_hagl_hal>
 $<TARGET_FILE:__idf_hagl>
 $<TARGET_FILE:__idf_htool_display>
 $<TARGET_FILE:__idf_htool_nvsm>
+$<TARGET_FILE:__idf_htool_sd>
 $<TARGET_FILE:__idf_htool_wifi>
-$<TARGET_FILE:__idf_htool_spi>
-$<TARGET_FILE:__idf_htool_pn532_spi>
 $<TARGET_FILE:__idf_htool_system>
 $<TARGET_FILE:__idf_htool_modbus>
 $<TARGET_FILE:__idf_htool_netman>
 $<TARGET_FILE:__idf_htool_uart>
 $<TARGET_FILE:__idf_htool_ble>
+$<TARGET_FILE:__idf_htool_spi>
+$<TARGET_FILE:__idf_htool_pn532_spi>
+$<TARGET_FILE:__idf_htool_ir>
 $<TARGET_FILE:__idf_htool_api>
 $<TARGET_FILE:__idf_main>

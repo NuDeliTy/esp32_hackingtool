@@ -65,6 +65,16 @@ static struct {
     struct arg_end *end;
 } creds_change_args;
 
+// NEW: TV-B-Gone Arguments
+static struct {
+    struct arg_lit *tv;
+    struct arg_lit *proj;
+    struct arg_lit *audio;
+    struct arg_lit *all;
+    struct arg_lit *stop;
+    struct arg_end *end;
+} tvbgone_args;
+
 char user[32];
 size_t user_len = 32;
 char pw[32];
@@ -417,8 +427,7 @@ static int evil_twin_command() {
                     }
                 }
             }
-            // UPDATE: Added 'true' (clone_mac) as the default argument for UART command
-            htool_api_start_evil_twin(ssid_input - 1, number, true);
+            htool_api_start_evil_twin(ssid_input - 1, number, true); // Added 'true' here
             
             if (htool_api_is_evil_twin_running()) {
                 printf("Press \033[31;1many\033[36;1m key for stop!\nUser entries:\n");
@@ -855,6 +864,44 @@ static int beacon_spammer_command(int32_t argc, char** argv) {
     return HTOOL_UART_OK;
 }
 
+// NEW: TV-B-Gone Command
+static int tvbgone_command(int32_t argc, char** argv) {
+    if (arg_parse(argc, argv, (void **) &tvbgone_args) != 0) {
+        printf("Error parsing arguments\n");
+        arg_print_errors(stdout, tvbgone_args.end, "tvbgone");
+        return HTOOL_UART_OK;
+    }
+
+    if (tvbgone_args.stop->count) {
+        if (htool_api_is_ir_attack_running()) {
+            htool_api_stop_ir_attack();
+            printf("TV-B-Gone stopped.\n");
+        } else {
+            printf("TV-B-Gone is not running.\n");
+        }
+        return HTOOL_UART_OK;
+    }
+
+    if (htool_api_is_ir_attack_running()) {
+        printf("TV-B-Gone is already running. Stop it first.\n");
+        return HTOOL_UART_OK;
+    }
+
+    int category = -1;
+    if (tvbgone_args.tv->count) category = 0;
+    else if (tvbgone_args.proj->count) category = 1;
+    else if (tvbgone_args.audio->count) category = 2;
+    else if (tvbgone_args.all->count) category = 3;
+
+    if (category != -1) {
+        printf("Starting TV-B-Gone attack (Category: %d)...\n", category);
+        htool_api_start_ir_attack(category);
+    } else {
+        printf("Usage: tvbgone [-t|-p|-a|-all|-stop]\n");
+    }
+
+    return HTOOL_UART_OK;
+}
 
 
 static void uart_menu_task() {
@@ -1130,6 +1177,24 @@ void htool_uart_cli_init() {
             .func = creds_command,
             .argtable = &creds_change_args,
     };
+
+    // REGISTER NEW TV-B-GONE COMMAND
+    tvbgone_args.tv = arg_lit0("t", "tvs", "Target TVs");
+    tvbgone_args.proj = arg_lit0("p", "projectors", "Target Projectors");
+    tvbgone_args.audio = arg_lit0("a", "audio", "Target Audio");
+    tvbgone_args.all = arg_lit0(NULL, "all", "Target All");
+    tvbgone_args.stop = arg_lit0("s", "stop", "Stop Attack");
+    tvbgone_args.end = arg_end(1);
+    
+    const esp_console_cmd_t tvbgone = {
+            .command = "tvbgone",
+            .help = "TV-B-Gone Controls",
+            .hint = NULL,
+            .func = tvbgone_command,
+            .argtable = &tvbgone_args,
+    };
+    esp_console_cmd_register(&tvbgone);
+
     esp_console_cmd_register(&captive_portal);
     esp_console_cmd_register(&beacon_spammer);
     esp_console_cmd_register(&scan);

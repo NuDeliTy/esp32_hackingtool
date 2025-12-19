@@ -76,13 +76,15 @@
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/hagl/libhagl.a
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_display/libhtool_display.a
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_nvsm/libhtool_nvsm.a
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_sd/libhtool_sd.a
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_wifi/libhtool_wifi.a
-/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_spi/libhtool_spi.a
-/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_pn532_spi/libhtool_pn532_spi.a
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_system/libhtool_system.a
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_modbus/libhtool_modbus.a
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_netman/libhtool_netman.a
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_uart/libhtool_uart.a
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_ble/libhtool_ble.a
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_spi/libhtool_spi.a
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_pn532_spi/libhtool_pn532_spi.a
+/home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_ir/libhtool_ir.a
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/htool_api/libhtool_api.a
 /home/tom/programming/Arduino/esp-learning/esp32_hackingtool/build/esp-idf/main/libmain.a

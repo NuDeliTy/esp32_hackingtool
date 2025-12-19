@@ -1,10 +1,5 @@
 /*
- * hackingtool.c - FINAL CLEAN BUILD + EVIL TWIN CONFIG
- * - Fixed function redefinition error
- * - 4-Button Navigation
- * - Mesh Support
- * - All menus working
- * - Evil Twin Config Menu (Clone MAC)
+ * hackingtool.c - FIXED: TV-B-Gone Submenu & Category Logic
  */
 
 #include "sdkconfig.h"
@@ -18,8 +13,8 @@
 #include "htool_api.h"
 #include "htool_netman.h"
 #include "htool_ble.h"
-#include "htool_wifi.h"
-#include "htool_uart.h"
+#include "htool_wifi.h" 
+#include "htool_uart.h" 
 #include "driver/i2c.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
@@ -33,17 +28,17 @@
 #define TAG "htool_ui"
 
 // --- CONFIGURATION ---
-#define HIDE_DUPLICATES 1
+#define HIDE_DUPLICATES 1 
 
 // --- PINS ---
 #define PIN_SDA     21
 #define PIN_SCL     22
 
 // Button Mapping
-#define PIN_BTN_UP    32  // K1
-#define PIN_BTN_DOWN  33  // K2
-#define PIN_BTN_OK    25  // K3 (#)
-#define PIN_BTN_BACK  34  // K4 (*) 26
+#define PIN_BTN_UP    32  
+#define PIN_BTN_DOWN  33  
+#define PIN_BTN_OK    25  
+#define PIN_BTN_BACK  34  
 
 // --- OLED ---
 #define SH1106_ADDR 0x3C
@@ -55,7 +50,7 @@ static uint8_t sh1106_buffer[SH1106_WIDTH * SH1106_HEIGHT / 8];
 extern wifi_ap_record_t *global_scans;
 extern uint8_t global_scans_count;
 extern volatile bool scan_started;
-extern uint8_t menu_cnt;
+extern uint8_t menu_cnt; 
 
 // --- DATA LISTS ---
 static const char *cp_templates[] = { "Google", "McDonald's", "Facebook", "Apple" };
@@ -72,13 +67,13 @@ static const char *et_config_options[] = {
     "Clone SSID Only"
 };
 
-static const char *beacon_modes[] = {
-    "Random SSIDs", "Router (rand MAC)", "Router (same MAC)", "Funny SSIDs"
+static const char *beacon_modes[] = { 
+    "Random SSIDs", "Router (rand MAC)", "Router (same MAC)", "Funny SSIDs" 
 };
 static const int BEACON_COUNT = 4;
 
-static const char *ble_modes[] = {
-    "Apple", "Google", "Samsung", "Microsoft", "Random"
+static const char *ble_modes[] = { 
+    "Apple", "Google", "Samsung", "Microsoft", "Random" 
 };
 static const int BLE_COUNT = 5;
 
@@ -87,6 +82,12 @@ static const char *attack_modes[] = {
 };
 static const int ATTACK_COUNT = 4;
 
+// NEW: IR Categories
+static const char *ir_categories[] = { 
+    "TVs Only", "Projectors", "Audio Systems", "All Devices" 
+};
+static const int IR_CAT_COUNT = 4;
+
 // --- STATE MACHINE ---
 typedef enum {
     MAIN_MENU = 0,
@@ -94,28 +95,29 @@ typedef enum {
     ATTACK_MENU,
     BEACON_MENU,
     CAPTIVE_MENU,
-    EVIL_TWIN_CONFIG_MENU, // New State
+    EVIL_TWIN_CONFIG_MENU,
     EVIL_TWIN_MENU,
-    BLE_MENU
+    BLE_MENU,
+    TV_B_GONE_MENU
 } ui_mode_t;
 
-static const char *main_items[] = {
-    "Scan Networks", "Deauth (toggle)", "Beacon Spammer", "Captive Portal", "Evil Twin", "BLE Spoof"
+static const char *main_items[] = { 
+    "Scan Networks", "Deauth (toggle)", "Beacon Spammer", "Captive Portal", "Evil Twin", "BLE Spoof", "TV-B-Gone" 
 };
-static const int MAIN_ITEMS = 6;
+static const int MAIN_ITEMS = 7;
 
 static int menu_index = 0;
 static ui_mode_t ui_mode = MAIN_MENU;
-static int target_ap_index = -1;
-static bool et_clone_mac = true; // Store ET config preference
+static int target_ap_index = -1; 
+static bool et_clone_mac = true; 
 
 // --- DATA STRUCT FOR UI LIST ---
 typedef struct {
     wifi_ap_record_t record;
-    int mesh_count;
+    int mesh_count; 
 } ui_scan_result_t;
 
-static ui_scan_result_t scan_results_local[64];
+static ui_scan_result_t scan_results_local[64]; 
 static int scan_count_local = 0;
 
 
@@ -146,8 +148,8 @@ static void sh1106_init(void) {
     sh1106_cmd(0xAE); sh1106_cmd(0xD5); sh1106_cmd(0x80);
     sh1106_cmd(0xA8); sh1106_cmd(0x3F); sh1106_cmd(0xD3); sh1106_cmd(0x00);
     sh1106_cmd(0x40); sh1106_cmd(0xAD); sh1106_cmd(0x8B); sh1106_cmd(0xA1);
-    sh1106_cmd(0xC8); sh1106_cmd(0xDA); sh1106_cmd(0x12); sh1106_cmd(0x81);
-    sh1106_cmd(0x7F); sh1106_cmd(0xD9); sh1106_cmd(0x22); sh1106_cmd(0xDB);
+    sh1106_cmd(0xC8); sh1106_cmd(0xDA); sh1106_cmd(0x12); sh1106_cmd(0x81); 
+    sh1106_cmd(0x7F); sh1106_cmd(0xD9); sh1106_cmd(0x22); sh1106_cmd(0xDB); 
     sh1106_cmd(0x35); sh1106_cmd(0xA4); sh1106_cmd(0xA6); sh1106_cmd(0xAF);
 }
 
@@ -189,31 +191,23 @@ static void i2c_init(void) {
 }
 
 // -------------------------------------------------------------
-// NEW BUTTON LOGIC (Replaces Rotary)
+// BUTTONS
 // -------------------------------------------------------------
-
-// Reads UP/DOWN buttons and returns +1 (Down) or -1 (Up)
 int read_navigation() {
     static int last_up_state = 1;
     static int last_down_state = 1;
-
     int up = gpio_get_level(PIN_BTN_UP);
     int down = gpio_get_level(PIN_BTN_DOWN);
     int result = 0;
-
-    // Detect Falling Edge (Pressed)
-    if (last_up_state == 1 && up == 0) result = -1;   // Move UP (Index decreases)
-    if (last_down_state == 1 && down == 0) result = 1; // Move DOWN (Index increases)
-
+    if (last_up_state == 1 && up == 0) result = -1;
+    if (last_down_state == 1 && down == 0) result = 1;
     last_up_state = up;
     last_down_state = down;
-
     return result;
 }
 
-// Reads OK/Back buttons (Active Low)
-static int read_button(int pin) {
-    return (gpio_get_level(pin) == 0);
+static int read_button(int pin) { 
+    return (gpio_get_level(pin) == 0); 
 }
 
 // -------------------------------------------------------------
@@ -239,43 +233,20 @@ static void show_action_msg(const char *line1, const char *line2) {
     clear(); draw_str(0, 0, line1); if (line2) draw_str(0, 12, line2); sh1106_update();
 }
 
-int beacon_spammer_mode_menu() {
-    int index = 0;
-    while (1) {
-        clear(); draw_str(0, 0, "Beacon Spammer Mode");
-        for (int i = 0; i < 4; i++) {
-            if (i == index) draw_str(0, 12+i*8, "> ");
-            draw_str(12, 12+i*8, beacon_modes[i]);
-        }
-        sh1106_update();
-
-        int nav = read_navigation();
-        if (nav) {
-            index += nav;
-            if (index < 0) index = 0;
-            if (index > 3) index = 3;
-        }
-        if (read_button(PIN_BTN_OK)) return index;
-        if (read_button(PIN_BTN_BACK)) return -1;
-        vTaskDelay(pdMS_TO_TICKS(100));
-    }
-}
-
 // --- SCANNING ---
 typedef enum { WIFI_SCAN_IDLE = 0, WIFI_SCAN_RUNNING, WIFI_SCAN_DONE } wifi_scan_state_t;
 static volatile wifi_scan_state_t scan_state = WIFI_SCAN_IDLE;
 
-// Smart Scan Task (Calculates Mesh Counts)
 static void wifi_scan_task(void *arg) {
     scan_state = WIFI_SCAN_RUNNING;
     scan_count_local = 0;
     htool_api_start_active_scan();
     vTaskDelay(pdMS_TO_TICKS(200));
     while (scan_started) { vTaskDelay(pdMS_TO_TICKS(100)); }
-
+    
     if (global_scans_count > 0 && global_scans != NULL) {
         int unique_count = 0;
-        char current_ssid[33];
+        char current_ssid[33]; 
 
         for (int i = 0; i < global_scans_count && unique_count < 64; ++i) {
             memset(current_ssid, 0, 33);
@@ -286,36 +257,35 @@ static void wifi_scan_task(void *arg) {
             }
 
             #if HIDE_DUPLICATES
-            bool is_duplicate = false;
-            for (int k = 0; k < unique_count; k++) {
-                if (strcmp(current_ssid, (char*)scan_results_local[k].record.ssid) == 0) {
-                    scan_results_local[k].mesh_count++;
-                    is_duplicate = true;
-                    break;
+                bool is_duplicate = false;
+                for (int k = 0; k < unique_count; k++) {
+                    if (strcmp(current_ssid, (char*)scan_results_local[k].record.ssid) == 0) {
+                        scan_results_local[k].mesh_count++;
+                        is_duplicate = true;
+                        break;
+                    }
                 }
-            }
-            if (!is_duplicate) {
+                if (!is_duplicate) {
+                    scan_results_local[unique_count].record = global_scans[i];
+                    strcpy((char*)scan_results_local[unique_count].record.ssid, current_ssid);
+                    scan_results_local[unique_count].mesh_count = 1; 
+                    unique_count++;
+                }
+            #else
                 scan_results_local[unique_count].record = global_scans[i];
                 strcpy((char*)scan_results_local[unique_count].record.ssid, current_ssid);
                 scan_results_local[unique_count].mesh_count = 1;
                 unique_count++;
-            }
-            #else
-            scan_results_local[unique_count].record = global_scans[i];
-            strcpy((char*)scan_results_local[unique_count].record.ssid, current_ssid);
-            scan_results_local[unique_count].mesh_count = 1;
-            unique_count++;
             #endif
         }
         scan_count_local = unique_count;
     }
-
     scan_state = WIFI_SCAN_DONE;
     vTaskDelete(NULL);
 }
 
 static void start_nonblocking_scan(void) {
-    if (scan_state == WIFI_SCAN_RUNNING) return;
+    if (scan_state == WIFI_SCAN_RUNNING) return; 
     scan_state = WIFI_SCAN_RUNNING;
     xTaskCreate(wifi_scan_task, "wifi_scan_task", 4096, NULL, 5, NULL);
 }
@@ -323,21 +293,21 @@ static void start_nonblocking_scan(void) {
 static void show_scan_results_screen(int selected) {
     clear(); draw_str(0, 0, "Scan results:");
     int count = (scan_state == WIFI_SCAN_DONE ? scan_count_local : global_scans_count);
-
+    
     if (count <= 0) { draw_str(0, 12, "No results"); sh1106_update(); return; }
 
     int start = (selected > 3 && count > 6) ? selected - 3 : 0;
     for (int i = 0; i < 6 && (start + i) < count; i++) {
         int idx = start + i;
         char line[40];
-
+        
         int nodes = scan_results_local[idx].mesh_count;
-        char mesh_str[16] = "";
+        char mesh_str[16] = ""; 
         if (nodes > 1) snprintf(mesh_str, 15, "(%d)", nodes);
 
         const char* freq = (scan_results_local[idx].record.primary > 14) ? "5G" : "2.4";
         snprintf(line, 40, "%-10.10s %s %s %d", scan_results_local[idx].record.ssid, freq, mesh_str, scan_results_local[idx].record.rssi);
-
+        
         if (idx == selected) draw_str(0, 12+i*8, "> ");
         draw_str(12, 12+i*8, line);
     }
@@ -358,43 +328,43 @@ static void ui_task(void *arg) {
 
     while (1) {
         int nav = read_navigation();
-
+        
         // --- INPUT HANDLING ---
         if (nav) {
             if (ui_mode == MAIN_MENU) {
                 menu_index += nav;
-                if (menu_index < 0) menu_index = 0;
+                if (menu_index < 0) menu_index = 0; 
                 else if (menu_index >= MAIN_ITEMS) menu_index = MAIN_ITEMS - 1;
-            }
+            } 
             else if (ui_mode == SCAN_RESULTS_MENU) {
                 scan_selected += nav;
                 int max = (scan_state == WIFI_SCAN_DONE ? scan_count_local : global_scans_count);
-                if (scan_selected < 0) scan_selected = 0;
+                if (scan_selected < 0) scan_selected = 0; 
                 else if (scan_selected >= max) scan_selected = max - 1;
-            }
+            } 
             else if (ui_mode == BEACON_MENU) {
                 menu_index += nav;
-                if (menu_index < 0) menu_index = 0;
+                if (menu_index < 0) menu_index = 0; 
                 else if (menu_index >= BEACON_COUNT) menu_index = BEACON_COUNT - 1;
             }
             else if (ui_mode == CAPTIVE_MENU) {
                 menu_index += nav;
-                if (menu_index < 0) menu_index = 0;
+                if (menu_index < 0) menu_index = 0; 
                 else if (menu_index >= CP_COUNT) menu_index = CP_COUNT - 1;
             }
             else if (ui_mode == EVIL_TWIN_CONFIG_MENU) {
                 menu_index += nav;
-                if (menu_index < 0) menu_index = 0;
+                if (menu_index < 0) menu_index = 0; 
                 else if (menu_index >= 2) menu_index = 1;
             }
             else if (ui_mode == EVIL_TWIN_MENU) {
                 menu_index += nav;
-                if (menu_index < 0) menu_index = 0;
+                if (menu_index < 0) menu_index = 0; 
                 else if (menu_index >= ET_COUNT) menu_index = ET_COUNT - 1;
             }
             else if (ui_mode == BLE_MENU) {
                 menu_index += nav;
-                if (menu_index < 0) menu_index = 0;
+                if (menu_index < 0) menu_index = 0; 
                 else if (menu_index >= BLE_COUNT) menu_index = BLE_COUNT - 1;
             }
             else if (ui_mode == ATTACK_MENU) {
@@ -402,33 +372,54 @@ static void ui_task(void *arg) {
                 if (menu_index < 0) menu_index = 0;
                 else if (menu_index >= ATTACK_COUNT) menu_index = ATTACK_COUNT - 1;
             }
+            else if (ui_mode == TV_B_GONE_MENU) {
+                // Nav for Categories (0-3)
+                menu_index += nav;
+                if (menu_index < 0) menu_index = 0;
+                else if (menu_index >= IR_CAT_COUNT) menu_index = IR_CAT_COUNT - 1;
+            }
         }
 
         // --- DRAWING ---
         if (ui_mode == MAIN_MENU) {
             clear(); draw_str(0, 0, "HackingTool");
-            for (int i = 0; i < MAIN_ITEMS; ++i) {
-                if (i == menu_index) draw_str(0, 12+i*8, "> ");
-                draw_str(12, 12+i*8, main_items[i]);
-                if (i == 1 && htool_api_is_deauther_running()) draw_str(90, 12+i*8, "RUN");
-                if (i == 2 && htool_api_is_beacon_spammer_running()) draw_str(90, 12+i*8, "RUN");
-                if (i == 3 && htool_api_is_captive_portal_running()) draw_str(90, 12+i*8, "RUN");
-                if (i == 4 && htool_api_is_evil_twin_running()) draw_str(90, 12+i*8, "RUN");
+            
+            // --- SCROLLING LOGIC FIXED ---
+            const int MAX_LINES = 6;
+            int start_idx = 0;
+            if (menu_index >= MAX_LINES) {
+                start_idx = menu_index - (MAX_LINES - 1);
+            }
+            
+            for (int i = 0; i < MAX_LINES; ++i) {
+                int item_idx = start_idx + i;
+                if (item_idx >= MAIN_ITEMS) break;
+                
+                int y = 12 + i * 8;
+                if (item_idx == menu_index) draw_str(0, y, "> ");
+                draw_str(12, y, main_items[item_idx]);
+                
+                // Status Indicators
+                if (item_idx == 1 && htool_api_is_deauther_running()) draw_str(90, y, "RUN");
+                if (item_idx == 2 && htool_api_is_beacon_spammer_running()) draw_str(90, y, "RUN");
+                if (item_idx == 3 && htool_api_is_captive_portal_running()) draw_str(90, y, "RUN");
+                if (item_idx == 4 && htool_api_is_evil_twin_running()) draw_str(90, y, "RUN");
+                if (item_idx == 6 && htool_api_is_ir_attack_running()) draw_str(90, y, "RUN");
             }
             sh1106_update();
-        }
+        } 
         else if (ui_mode == SCAN_RESULTS_MENU) {
             if (scan_state == WIFI_SCAN_RUNNING) {
-                clear(); draw_str(0, 0, "Scanning WiFi...");
-                if (scan_count_local > 0) draw_str(0, 20, "Updating...");
+                clear(); draw_str(0, 0, "Scanning WiFi..."); 
+                if (scan_count_local > 0) draw_str(0, 20, "Updating..."); 
                 sh1106_update();
             } else {
                 show_scan_results_screen(scan_selected);
             }
-        }
+        } 
         else if (ui_mode == ATTACK_MENU) {
             clear(); draw_str(0, 0, "Attack Menu:");
-            char ssid_local[64] = {0};
+            char ssid_local[64] = {0}; 
             if (global_scans && target_ap_index < global_scans_count)
                 snprintf(ssid_local, 63, "Target: %s", scan_results_local[target_ap_index].record.ssid);
             else snprintf(ssid_local, 63, "Target: Unknown");
@@ -473,14 +464,14 @@ static void ui_task(void *arg) {
         }
         else if (ui_mode == EVIL_TWIN_MENU) {
             clear(); draw_str(0, 0, "Evil Twin");
-            char ssid_local[64] = {0};
+            char ssid_local[64] = {0}; 
             if (global_scans && target_ap_index < global_scans_count)
                 snprintf(ssid_local, 63, "Target: %s", scan_results_local[target_ap_index].record.ssid);
             draw_str(0, 10, ssid_local[0] ? ssid_local : "Choose Template:");
 
             int start_idx = (menu_index > 3) ? menu_index - 3 : 0;
             if (start_idx + 4 > ET_COUNT) start_idx = ET_COUNT - 4;
-
+            
             for (int i=0; i<4; i++) {
                 int real_idx = start_idx + i;
                 if(real_idx==menu_index) draw_str(0, 24+i*10, "> ");
@@ -500,6 +491,20 @@ static void ui_task(void *arg) {
             }
             sh1106_update();
         }
+        else if (ui_mode == TV_B_GONE_MENU) {
+            clear(); draw_str(0, 0, "TV-B-Gone (IR)");
+            
+            if (htool_api_is_ir_attack_running()) {
+                draw_str(30, 25, "ATTACKING!");
+                draw_str(10, 45, "Press OK to Stop");
+            } else {
+                for (int i=0; i<IR_CAT_COUNT; i++) {
+                    if (i==menu_index) draw_str(0, 12+i*10, "> ");
+                    draw_str(12, 12+i*10, ir_categories[i]);
+                }
+            }
+            sh1106_update();
+        }
 
         // --- BUTTON HANDLING ---
         if (read_button(PIN_BTN_OK)) {
@@ -507,26 +512,27 @@ static void ui_task(void *arg) {
             if (ui_mode == MAIN_MENU) {
                 switch(menu_index) {
                     case 0: scan_selected = 0; start_nonblocking_scan(); ui_mode = SCAN_RESULTS_MENU; pending_op = PENDING_NONE; break;
-                    case 1:
+                    case 1: 
                         if (htool_api_is_deauther_running()) {
                             htool_api_stop_deauther(); show_action_msg("Deauth", "Stopped");
                         } else {
-                            scan_selected = 0; start_nonblocking_scan(); ui_mode = SCAN_RESULTS_MENU; pending_op = PENDING_NONE;
+                            scan_selected = 0; start_nonblocking_scan(); ui_mode = SCAN_RESULTS_MENU; pending_op = PENDING_NONE; 
                         }
                         break;
                     case 2: ui_mode = BEACON_MENU; menu_index = beacon_index; break;
                     case 3: ui_mode = CAPTIVE_MENU; menu_index = 0; break;
                     case 4: scan_selected = 0; start_nonblocking_scan(); ui_mode = SCAN_RESULTS_MENU; pending_op = PENDING_EVIL_TWIN; break;
                     case 5: stop_ble_monitor(); htool_api_ble_init(); ui_mode = BLE_MENU; menu_index = ble_preset; break;
+                    case 6: ui_mode = TV_B_GONE_MENU; menu_index = 0; break;
                 }
             }
             else if (ui_mode == BEACON_MENU) {
                 if (htool_api_is_beacon_spammer_running() && beacon_index == menu_index) {
                     htool_api_stop_beacon_spammer();
                 } else {
-                    htool_api_stop_beacon_spammer();
+                    htool_api_stop_beacon_spammer(); 
                     beacon_task_args.beacon_index = menu_index;
-                    menu_cnt = global_scans_count;
+                    menu_cnt = global_scans_count; 
                     beacon_index = menu_index; nvs_save_settings();
                     htool_api_start_beacon_spammer(menu_index);
                 }
@@ -541,7 +547,7 @@ static void ui_task(void *arg) {
             }
             else if (ui_mode == SCAN_RESULTS_MENU && scan_state == WIFI_SCAN_DONE) {
                 if (scan_count_local > 0) {
-                    target_ap_index = scan_selected;
+                    target_ap_index = scan_selected; 
                     if (pending_op == PENDING_EVIL_TWIN) {
                         ui_mode = EVIL_TWIN_CONFIG_MENU; menu_index = 0; pending_op = PENDING_NONE;
                     } else {
@@ -565,14 +571,14 @@ static void ui_task(void *arg) {
                     if (htool_api_is_deauther_running()) {
                         htool_api_stop_deauther();
                     } else {
-                        menu_cnt = global_idx;
+                        menu_cnt = global_idx; 
                         htool_api_start_deauther();
                     }
                 }
             }
             else if (ui_mode == EVIL_TWIN_CONFIG_MENU) {
                 et_clone_mac = (menu_index == 0); // 0 = Yes, 1 = No
-                ui_mode = EVIL_TWIN_MENU;
+                ui_mode = EVIL_TWIN_MENU; 
                 menu_index = 0;
             }
             else if (ui_mode == EVIL_TWIN_MENU) {
@@ -596,8 +602,16 @@ static void ui_task(void *arg) {
                 if (htool_api_ble_adv_running() && ble_preset == menu_index) {
                     htool_api_ble_stop_adv();
                 } else {
-                    htool_api_set_ble_adv(menu_index); htool_api_ble_start_adv();
+                    htool_api_set_ble_adv(menu_index); htool_api_ble_start_adv(); 
                     ble_preset = menu_index; nvs_save_settings();
+                }
+            }
+            else if (ui_mode == TV_B_GONE_MENU) {
+                if (htool_api_is_ir_attack_running()) {
+                    htool_api_stop_ir_attack();
+                } else {
+                    // Start attack with current category
+                    htool_api_start_ir_attack(menu_index);
                 }
             }
         }
@@ -609,14 +623,18 @@ static void ui_task(void *arg) {
             else if (ui_mode == BEACON_MENU) { htool_api_stop_beacon_spammer(); ui_mode = MAIN_MENU; }
             else if (ui_mode == CAPTIVE_MENU) { htool_api_stop_captive_portal(); ui_mode = MAIN_MENU; }
             else if (ui_mode == EVIL_TWIN_CONFIG_MENU) { ui_mode = SCAN_RESULTS_MENU; }
-            else if (ui_mode == EVIL_TWIN_MENU) {
+            else if (ui_mode == EVIL_TWIN_MENU) { 
                 if (htool_api_is_evil_twin_running()) {
-                    htool_api_stop_evil_twin();
+                     htool_api_stop_evil_twin(); 
                 }
                 ui_mode = EVIL_TWIN_CONFIG_MENU; // Go back to config, not scan results
             }
             else if (ui_mode == BLE_MENU) {
                 htool_api_ble_stop_adv(); htool_api_ble_deinit(); init_ble_monitor();
+                ui_mode = MAIN_MENU;
+            }
+            else if (ui_mode == TV_B_GONE_MENU) {
+                htool_api_stop_ir_attack(); // Safety stop when leaving menu
                 ui_mode = MAIN_MENU;
             }
             else ui_mode = MAIN_MENU;
@@ -642,25 +660,24 @@ void app_main(void) {
     }
     initialize_esp_modules();
     i2c_init(); sh1106_init();
-
+    
     // NEW GPIO CONFIG for 4 Buttons
     gpio_config_t io_conf = {
-        .intr_type = GPIO_INTR_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE, 
         .mode = GPIO_MODE_INPUT,
         // Bitmask for all 4 buttons (32, 33, 25, 26)
         .pin_bit_mask = (1ULL << PIN_BTN_UP) | (1ULL << PIN_BTN_DOWN) | (1ULL << PIN_BTN_OK) | (1ULL << PIN_BTN_BACK),
-        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE, 
         .pull_up_en = GPIO_PULLUP_ENABLE // Enable internal pull-ups
     };
     ESP_ERROR_CHECK(gpio_config(&io_conf));
 
     xTaskCreate(ui_task, "ui_task", 8 * 1024, NULL, tskIDLE_PRIORITY + 2, NULL);
 
-    htool_netman_do_nothing();
+    htool_netman_do_nothing(); 
     htool_api_init();
     htool_wifi_start();
     htool_uart_cli_start();
-    //DEBUG
-    //init_ble_monitor();
+    
     ESP_LOGI(TAG, "Startup completed");
 }

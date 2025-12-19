@@ -1,27 +1,8 @@
 /*
-Copyright (c) 2023 kl0ibi
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+ * htool_display.c - FIXED SCROLLING & LAYOUT
  */
 #include <stdio.h>
 #include "htool_display.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -62,17 +43,24 @@ uint8_t animation = 0;
 
 wchar_t evil_twin_ssid[26] = {0};
 
-color_t color_all_scans[16]; // TODO: remove
-
+color_t color_all_scans[16];
 
 const wchar_t header[23] = u"HackingTool by kl0ibi";
-const wchar_t menu[60] = u"Menu:\nLeft: ↑ / Right: ↓\nRight Long Press: OK";
-const wchar_t scan[40] = u"-) Scan Networks";
-const wchar_t deauth[40] = u"-) Deauth WiFi";
-const wchar_t beacon[40] = u"-) Beacon Spammer";
-const wchar_t c_portal[40] = u"-) Captive Portal";
-const wchar_t evil_twin[40] = u"-) Evil Twin";
-const wchar_t ble_spoof[40] = u"-) BLE Spoof";
+// Compact header for scrolling menu
+const wchar_t menu_header[40] = u"Menu (L:Up R:Dn LR:OK)"; 
+
+// Menu Items Array
+const wchar_t *main_menu_items[] = {
+    u"-) Scan Networks",
+    u"-) Deauth WiFi",
+    u"-) Beacon Spammer",
+    u"-) Captive Portal",
+    u"-) Evil Twin",
+    u"-) BLE Spoof",
+    u"-) TV-B-Gone"
+};
+const int MAIN_MENU_LEN = 7;
+
 uint8_t printy = 0;
 uint8_t length = 0;
 wchar_t scans[10][50] = {0};
@@ -97,7 +85,11 @@ static void menu_task() {
     hagl_clear(display);
 
     while (true) {
-        hagl_put_text(display, header, 0, 0, color_header, font6x9);
+        // Draw header on most screens (overwritten in specific cases if needed)
+        if (cur_handling_state != ST_MENU && cur_handling_state != ST_TV_B_GONE) {
+             hagl_put_text(display, header, 0, 0, color_header, font6x9);
+        }
+
         switch (cur_handling_state) {
             case ST_STARTUP:
                 hagl_clear(display);
@@ -128,59 +120,37 @@ static void menu_task() {
                 hagl_clear(display);
                 cur_handling_state = ST_MENU;
                 break;
+
             case ST_MENU:
-                hagl_put_text(display, menu, 0, 10, color_header, font6x9);
-                if (menu_cnt == 0) {
-                    hagl_put_text(display, scan, 0, 40, color_red, font6x9);
-                    hagl_put_text(display, deauth, 0, 50, color_green, font6x9);
-                    hagl_put_text(display, beacon, 0, 60, color_green, font6x9);
-                    hagl_put_text(display, c_portal, 0, 70, color_green, font6x9);
-                    hagl_put_text(display, evil_twin, 0, 80, color_green, font6x9);
-                    hagl_put_text(display, ble_spoof, 0, 90, color_green, font6x9);
+                // --- SCROLLING MENU LOGIC ---
+                hagl_put_text(display, menu_header, 0, 0, color_header, font6x9);
+                
+                int view_lines = 5; // Number of items that fit on screen
+                int start_idx = 0;
+                
+                // Calculate scroll offset
+                if (menu_cnt >= view_lines) {
+                    start_idx = menu_cnt - (view_lines - 1);
                 }
-                else if (menu_cnt == 1) {
-                    hagl_put_text(display, scan, 0, 40, color_green, font6x9);
-                    hagl_put_text(display, deauth, 0, 50, color_red, font6x9);
-                    hagl_put_text(display, beacon, 0, 60, color_green, font6x9);
-                    hagl_put_text(display, c_portal, 0, 70, color_green, font6x9);
-                    hagl_put_text(display, evil_twin, 0, 80, color_green, font6x9);
-                    hagl_put_text(display, ble_spoof, 0, 90, color_green, font6x9);
+                
+                for (int i = 0; i < view_lines; i++) {
+                    int item_idx = start_idx + i;
+                    if (item_idx >= MAIN_MENU_LEN) break;
+                    
+                    // Draw Y position starting below header
+                    int y_pos = 15 + (i * 10); 
+                    color_t c = (menu_cnt == item_idx) ? color_red : color_green;
+                    hagl_put_text(display, main_menu_items[item_idx], 0, y_pos, c, font6x9);
                 }
-                else if (menu_cnt == 2) {
-                    hagl_put_text(display, scan, 0, 40, color_green, font6x9);
-                    hagl_put_text(display, deauth, 0, 50, color_green, font6x9);
-                    hagl_put_text(display, beacon, 0, 60, color_red, font6x9);
-                    hagl_put_text(display, c_portal, 0, 70, color_green, font6x9);
-                    hagl_put_text(display, evil_twin, 0, 80, color_green, font6x9);
-                    hagl_put_text(display, ble_spoof, 0, 90, color_green, font6x9);
-                }
-                else if (menu_cnt == 3) {
-                    hagl_put_text(display, scan, 0, 40, color_green, font6x9);
-                    hagl_put_text(display, deauth, 0, 50, color_green, font6x9);
-                    hagl_put_text(display, beacon, 0, 60, color_green, font6x9);
-                    hagl_put_text(display, c_portal, 0, 70, color_red, font6x9);
-                    hagl_put_text(display, evil_twin, 0, 80, color_green, font6x9);
-                    hagl_put_text(display, ble_spoof, 0, 90, color_green, font6x9);
-                }
-                else if (menu_cnt == 4) {
-                    hagl_put_text(display, scan, 0, 40, color_green, font6x9);
-                    hagl_put_text(display, deauth, 0, 50, color_green, font6x9);
-                    hagl_put_text(display, beacon, 0, 60, color_green, font6x9);
-                    hagl_put_text(display, c_portal, 0, 70, color_green, font6x9);
-                    hagl_put_text(display, evil_twin, 0, 80, color_red, font6x9);
-                    hagl_put_text(display, ble_spoof, 0, 90, color_green, font6x9);
-                }
-                else if (menu_cnt == 5) {
-                    hagl_put_text(display, scan, 0, 40, color_green, font6x9);
-                    hagl_put_text(display, deauth, 0, 50, color_green, font6x9);
-                    hagl_put_text(display, beacon, 0, 60, color_green, font6x9);
-                    hagl_put_text(display, c_portal, 0, 70, color_green, font6x9);
-                    hagl_put_text(display, evil_twin, 0, 80, color_green, font6x9);
-                    hagl_put_text(display, ble_spoof, 0, 90, color_red, font6x9);
-                }
+
                 if (long_press_right) {
                     long_press_right = false;
-                    cur_handling_state = menu_cnt + 1;
+                    if (menu_cnt == 6) { // TV-B-Gone index
+                        cur_handling_state = ST_TV_B_GONE;
+                    } else {
+                        cur_handling_state = menu_cnt + 1;
+                    }
+
                     if (cur_handling_state == ST_BLE_SPOOF) {
                         htool_api_ble_init();
                     }
@@ -195,6 +165,7 @@ static void menu_task() {
                 vTaskDelay(pdMS_TO_TICKS(100));
                 hagl_flush(display);
                 break;
+
             case ST_SCAN:
                 printy = 40;
                 hagl_put_text(display, u"Scan:\nLeft Long Press: BACK", 0, 10, color_header, font6x9);
@@ -217,16 +188,13 @@ static void menu_task() {
                                 if (length > 15) {
                                     length = 15;
                                 }
-                                if (global_scans[i].authmode == 0) { // TODO: use helper pointer return function
-                                    //OPEN
+                                if (global_scans[i].authmode == 0) { 
                                     sprintf(scan_auth, "OPEN");
                                 }
                                 else if (global_scans[i].authmode == 1) {
-                                    //WEP
                                     sprintf(scan_auth, "WEP");
                                 }
                                 else {
-                                    //WPA or versions of it
                                     sprintf(scan_auth, "WPA");
                                 }
                                 swprintf(scans[i], sizeof(scans[i]), u"%.*s %d %s\n%02x:%02x:%02x:%02x:%02x:%02x ch: %d/%d",length, global_scans[i].ssid, global_scans[i].rssi, scan_auth, global_scans[i].bssid[0],
@@ -346,7 +314,7 @@ static void menu_task() {
                     hagl_put_text(display, u"[RUNNING]", 78, 43, color_green, font6x9);
                 }
                 for (uint8_t i = 0; i < 11; i++) {
-                    color_all_scans[i] = hagl_color(display, 0, 255, 0); //TODO: change handling only use 2 variables
+                    color_all_scans[i] = hagl_color(display, 0, 255, 0); 
                 }
                 color_all_scans[menu_cnt] = hagl_color(display, 255, 0, 0);
 
@@ -402,7 +370,7 @@ static void menu_task() {
                 hagl_clear(display);
                 break;
             case ST_BEACON:
-                hagl_put_text(display, u"Beacon Spammer\nLong Left Press: BACK", 0, 10, color_header, font5x7); //TOOO: change header
+                hagl_put_text(display, u"Beacon Spammer\nLong Left Press: BACK", 0, 10, color_header, font5x7);
                 hagl_put_text(display, u"Long Right Press to", 0, 26, color_header, font5x7);
                 for (uint8_t i = 0; i < 4; i++) {
                     color_all_scans[i] = hagl_color(display, 0, 255, 0);
@@ -410,7 +378,7 @@ static void menu_task() {
                 color_all_scans[menu_cnt] = hagl_color(display, 255, 0, 0);
 
                 hagl_put_text(display, u"-) Random (fastest)", 0, 46, color_all_scans[0], font5x7);
-                hagl_put_text(display, u"-) Choose WiFi (random mac)", 0, 56, color_all_scans[1], font5x7);
+                hagl_put_text(display, u"-) Choose WiFi (rand mac)", 0, 56, color_all_scans[1], font5x7);
                 hagl_put_text(display, u"-) Choose WiFi (same mac)", 0, 66, color_all_scans[2], font5x7);
                 hagl_put_text(display, u"-) Funny (slowest)", 0, 76, color_all_scans[3], font5x7);
 
@@ -1088,6 +1056,49 @@ static void menu_task() {
                 hagl_clear(display);
                 vTaskDelay(pdMS_TO_TICKS(100));
                 break;
+
+            case ST_TV_B_GONE:
+                hagl_put_text(display, u"TV-B-Gone Menu", 0, 0, color_header, font6x9);
+                hagl_put_text(display, u"L_Long: Back", 0, 10, color_header, font5x7);
+                hagl_put_text(display, u"R_Long: Select", 0, 20, color_header, font5x7);
+
+                // Options
+                const wchar_t *ir_opts[] = { u"-) TVs Only", u"-) Projectors", u"-) Audio", u"-) ALL DEVICES" };
+                
+                for(int i=0; i<4; i++) {
+                    color_t c = (menu_cnt == i) ? color_red : color_green;
+                    hagl_put_text(display, ir_opts[i], 0, 35 + (i*10), c, font5x7);
+                }
+
+                if (htool_api_is_ir_attack_running()) {
+                    hagl_put_text(display, u"[RUNNING]", 80, 0, color_red, font5x7);
+                } else {
+                    hagl_put_text(display, u"[READY]", 80, 0, color_green, font5x7);
+                }
+
+                if (long_press_right) {
+                    long_press_right = false;
+                    if (htool_api_is_ir_attack_running()) {
+                        htool_api_stop_ir_attack();
+                    } else {
+                        // Pass menu_cnt as the category (0, 1, 2, 3)
+                        htool_api_start_ir_attack(menu_cnt);
+                    }
+                }
+                if (long_press_left) {
+                    long_press_left = false;
+                    htool_api_stop_ir_attack();
+                    cur_handling_state = ST_MENU;
+                    menu_cnt = 0;
+                    hagl_flush(display);
+                    hagl_clear(display);
+                    break;
+                }
+                vTaskDelay(pdMS_TO_TICKS(100));
+                hagl_flush(display);
+                hagl_clear(display);
+                break;
+
             default:
                 break;
         }
@@ -1108,7 +1119,7 @@ static void IRAM_ATTR gpio_interrupt_handler(void *args) {
             }
         }
     }
-    else if ((int)args == 35) {
+    else if ((int)args == 35) { // Right Button (Down/Next)
         if (long_press_right && esp_timer_get_time() <= last_timestamp+350000) {
             return;
         }
@@ -1142,7 +1153,7 @@ static void IRAM_ATTR gpio_interrupt_handler(void *args) {
             }
             else if (cur_handling_state == ST_MENU) {
                 menu_cnt++;
-                if (menu_cnt > 5) {
+                if (menu_cnt > 6) { 
                     menu_cnt = 0;
                 }
             }
@@ -1170,9 +1181,16 @@ static void IRAM_ATTR gpio_interrupt_handler(void *args) {
                     menu_cnt = 0;
                 }
             }
+            // --- ADDED TV-B-GONE LOGIC HERE ---
+            else if (cur_handling_state == ST_TV_B_GONE) {
+                menu_cnt++;
+                if (menu_cnt > 3) { // 4 Options: 0-3
+                    menu_cnt = 0;
+                }
+            }
         }
     }
-    else if ((int)args == 0) {
+    else if ((int)args == 0) { // Left Button (Up/Previous)
         if (long_press_left && esp_timer_get_time() <= last_timestamp+350000) {
             return;
         }
@@ -1217,7 +1235,7 @@ static void IRAM_ATTR gpio_interrupt_handler(void *args) {
                     menu_cnt--;
                 }
                 else {
-                    menu_cnt = 5;
+                    menu_cnt = 6;
                 }
             }
             else if (cur_handling_state == ST_BEACON) {
@@ -1252,6 +1270,15 @@ static void IRAM_ATTR gpio_interrupt_handler(void *args) {
                     menu_cnt = 5;
                 }
             }
+            // --- ADDED TV-B-GONE LOGIC HERE ---
+            else if (cur_handling_state == ST_TV_B_GONE) {
+                if (menu_cnt != 0) {
+                    menu_cnt--;
+                }
+                else {
+                    menu_cnt = 3; // Wrap around to last item
+                }
+            }
         }
     }
 }
@@ -1275,5 +1302,3 @@ void htool_display_init() {
 void htool_display_start() {
     xTaskCreatePinnedToCore(menu_task, "test", (1024*6), NULL, 1, NULL, 1);
 }
-
-

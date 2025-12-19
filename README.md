@@ -25,6 +25,27 @@ K3 (# / OK) -> GPIO 25
 
 *K4 ( / Back)** -> GPIO 26 (Changed from 34 to ensure stability)
 
+IR-wireup
+
++5V (VIN)
+                     |
+         +-----------+-----------+
+         |           |           |
+        [R]         [R]         [R]  (10-47 Ohm each)
+         |           |           |
+        _|_         _|_         _|_
+ LED 1  \ /   LED 2 \ /   LED 3 \ /  (Anode + up, Cathode - down)
+        ---         ---         ---
+         |           |           |
+         +-----------+-----------+
+                     |
+                 C  /
+    GPIO 23 ---[R]---|  PN2222 (NPN)
+  (Base Resistor    \
+   220-1k Ohm)       v  E
+                     |
+                    GND
+
 # The Ultimate ESP32 Hacking Tool: Because sometimes you just need to be a little evil!
 ### Looking to take down your neighbor's wifi network? Or just want to cause chaos at your local coffee shop? Or does your Boss pay you less than you deserve?
 Look no further, because we have the perfect tool for you: the ESP32 hacking tool!

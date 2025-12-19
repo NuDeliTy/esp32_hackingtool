@@ -28,6 +28,7 @@ SOFTWARE.
 #include "htool_pn532_spi.h"
 #include "htool_uart.h"
 #include "htool_ble.h"
+#include "htool_ir.h"
 
 
 #define MAX_COMMAND_LENGTH 50
@@ -39,11 +40,25 @@ static bool deauther_running = false;
 static bool cp_is_running = false;
 static bool evil_twin_is_running = false;
 
+// --- IR Wrappers ---
+void htool_api_start_ir_attack(int category) {
+    htool_ir_start_attack(category);
+}
+
+void htool_api_stop_ir_attack() {
+    htool_ir_stop_attack();
+}
+
+bool htool_api_is_ir_attack_running() {
+    return htool_ir_is_running();
+}
 
 bool htool_api_ble_adv_running() {
     return htool_ble_adv_running();
 }
 
+
+// --- BLE-wrappers ---
 
 void htool_api_ble_stop_adv() {
     htool_ble_stop_adv();

